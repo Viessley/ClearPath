@@ -1,5 +1,6 @@
 package com.clearpath.backend;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,6 +50,46 @@ public class AIService {
 
         } catch (Exception e) {
             return "AI service error: " + e.getMessage();
+        }
+    }
+
+    public CheatsheetResponse generateCheatsheet(String prompt) {
+        String requestBody = """
+            {
+                "model": "claude-haiku-4-5-20251001",
+                "max_tokens": 2048,
+                "messages": [
+                    {
+                        "role": "user",
+                        "content": "%s"
+                    }
+                ]
+            }
+            """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create("https://api.anthropic.com/v1/messages"))
+                    .header("Content-Type", "application/json")
+                    .header("x-api-key", apiKey)
+                    .header("anthropic-version", "2023-06-01")
+                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                    .build();
+
+            HttpResponse<String> response = client.send(request,
+                    HttpResponse.BodyHandlers.ofString());
+
+            // Parse Claude's response envelope
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode root = mapper.readTree(response.body());
+            String content = root.path("content").get(0).path("text").asText();
+
+            // Parse the JSON AI returned into CheatsheetResponse
+            return mapper.readValue(content, CheatsheetResponse.class);
+
+        } catch (Exception e) {
+            return null;
         }
     }
 

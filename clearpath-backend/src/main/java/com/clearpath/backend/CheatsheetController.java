@@ -35,12 +35,20 @@ public class CheatsheetController {
         // Step 2: Build prompt
         String prompt = aiPromptBuilder.buildPrompt(session);
 
-        // Step 3: Send to AI
-        // TODO: parse AI response into CheatsheetResponse
+        // Step 3: Send to AI and parse response
+        CheatsheetResponse cheatsheet = aiService.generateCheatsheet(prompt);
+        if (cheatsheet == null) {
+            Map<String, Object> error = new HashMap<>();
+            error.put("error", "AI service failed to generate cheatsheet");
+            return error;
+        }
+
+        // Step 4: Return cheatsheet
         Map<String, Object> response = new HashMap<>();
-        response.put("status", "validated");
-        response.put("message", "Session is valid. AI integration coming soon.");
-        response.put("prompt", prompt);
+        response.put("profile", cheatsheet.getProfile());
+        response.put("steps", cheatsheet.getSteps());
+        response.put("warnings", cheatsheet.getWarnings());
+        response.put("aiNotes", cheatsheet.getAiNotes());
         return response;
     }
 
