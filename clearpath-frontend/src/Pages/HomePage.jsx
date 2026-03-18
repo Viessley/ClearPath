@@ -3,23 +3,29 @@ import TopBar from '../components/layout/TopBar'
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
+import GetLicensedIcon from '../icons/GetLicensedIcon'
+import SwitchLicensesIcon from '../icons/SwitchLicensesIcon'
+import FixTicketsIcon from '../icons/FixTicketsIcon'
+import StudyPermitIcon from '../icons/StudyPermitIcon'
+import WorkPermitIcon from '../icons/WorkPermitIcon'
+
 
 const SERVICES = [
   {
     category: "Ontario Driver Services",
     bgColor: "#D1EDE9",
     items: [
-      { id: "get-licensed",   icon: "🪪", title: "Get licensed",    subtitle: "Get G1, G2, or full G license" },
-      { id: "switch-license", icon: "🔄", title: "Switch licenses", subtitle: "Exchange foreign license" },
-      { id: "fix-tickets",    icon: "🎫", title: "Fix tickets",     subtitle: "Pay, reduce, or fight the ticket." },
+      { id: "get-licensed",   icon: <GetLicensedIcon />,    title: "Get licensed",    subtitle: "Get G1, G2, or full G license" },
+{ id: "switch-license", icon: <SwitchLicensesIcon />, title: "Switch licenses", subtitle: "Exchange foreign license" },
+{ id: "fix-tickets",    icon: <FixTicketsIcon />,     title: "Fix tickets",     subtitle: "Pay, reduce, or fight the ticket." },
     ],
   },
   {
     category: "Visa Services",
     bgColor: "#E3F2FD",
     items: [
-      { id: "study-permit", icon: "📄", title: "Study Permit", subtitle: "Apply or extend your study permit" },
-      { id: "work-permit",  icon: "💼", title: "Work Permit",  subtitle: "Open or employer-specific permits" },
+      { id: "study-permit", icon: <StudyPermitIcon />, title: "Study Permit", subtitle: "Apply or extend your study permit" },
+      { id: "work-permit",  icon: <WorkPermitIcon />, title: "Work Permit",  subtitle: "Open or employer-specific permits" },
     ],
   },
 ]
