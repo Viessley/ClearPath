@@ -7,6 +7,7 @@ import ServiceAccordion from '../components/home/ServiceAccordion'
 const SERVICES = [
   {
     category: "Ontario Driver Services",
+    bgColor: "#D1EDE9",
     items: [
       { id: "get-licensed",   icon: "🪪", title: "Get licensed",    subtitle: "Get G1, G2, or full G license" },
       { id: "switch-license", icon: "🔄", title: "Switch licenses", subtitle: "Exchange foreign license" },
@@ -15,6 +16,7 @@ const SERVICES = [
   },
   {
     category: "Visa Services",
+    bgColor: "#E3F2FD",
     items: [
       { id: "study-permit", icon: "📄", title: "Study Permit", subtitle: "Apply or extend your study permit" },
       { id: "work-permit",  icon: "💼", title: "Work Permit",  subtitle: "Open or employer-specific permits" },
@@ -28,14 +30,16 @@ export default function HomePage() {
   const toggleItem = (id) => setSelected(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen bg-gray-50 flex flex-col">
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
       <TopBar />
 
       <div className="flex-1 px-4 pt-4 pb-32">
         {/* Greeting */}
         <div className="flex items-center gap-3 mb-4">
           <Mascot />
-          <p className="text-sm text-gray-500">Welcome, <strong className="text-teal-800">#UserID</strong>! What brings you here?</p>
+          <p className="text-sm" style={{ color: "#4B5563" }}>
+            Welcome, <strong style={{ color: "#111827" }}>#UserID</strong>! What brings you here?
+          </p>
         </div>
 
         {/* Services */}
@@ -43,6 +47,7 @@ export default function HomePage() {
           <ServiceAccordion
             key={section.category}
             category={section.category}
+            bgColor={section.bgColor}
             items={section.items}
             selected={selected}
             onToggle={toggleItem}
