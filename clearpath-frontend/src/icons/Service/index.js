@@ -1,0 +1,7 @@
+export { default as GetLicensedIcon } from './GetLicensedIcon'
+export { default as SwitchLicensesIcon } from './SwitchLicensesIcon'
+export { default as FixTicketsIcon } from './FixTicketsIcon'
+export { default as DocumentsNeededIcon } from './DocumentsNeededIcon'
+export { default as StepByStepPlanIcon } from './StepByStepPlanIcon'
+export { default as StudyPermitIcon } from './StudyPermitIcon'
+export { default as WorkPermitIcon } from './WorkPermitIcon'

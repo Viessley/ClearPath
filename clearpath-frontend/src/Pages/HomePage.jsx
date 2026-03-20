@@ -3,11 +3,11 @@ import TopBar from '../components/layout/TopBar'
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
-import GetLicensedIcon from '../icons/GetLicensedIcon'
-import SwitchLicensesIcon from '../icons/SwitchLicensesIcon'
-import FixTicketsIcon from '../icons/FixTicketsIcon'
-import StudyPermitIcon from '../icons/StudyPermitIcon'
-import WorkPermitIcon from '../icons/WorkPermitIcon'
+import GetLicensedIcon from '../icons/Service/GetLicensedIcon'
+import SwitchLicensesIcon from '../icons/Service/SwitchLicensesIcon'
+import FixTicketsIcon from '../icons/Service/FixTicketsIcon'
+import StudyPermitIcon from '../icons/Service/StudyPermitIcon'
+import WorkPermitIcon from '../icons/Service/WorkPermitIcon'
 
 
 const SERVICES = [
@@ -15,9 +15,9 @@ const SERVICES = [
     category: "Ontario Driver Services",
     bgColor: "#D1EDE9",
     items: [
-      { id: "get-licensed",   icon: <GetLicensedIcon />,    title: "Get licensed",    subtitle: "Get G1, G2, or full G license" },
-{ id: "switch-license", icon: <SwitchLicensesIcon />, title: "Switch licenses", subtitle: "Exchange foreign license" },
-{ id: "fix-tickets",    icon: <FixTicketsIcon />,     title: "Fix tickets",     subtitle: "Pay, reduce, or fight the ticket." },
+      { id: "get-licensed", icon: <GetLicensedIcon />, title: "Get licensed", subtitle: "Get G1, G2, or full G license" },
+      { id: "switch-license", icon: <SwitchLicensesIcon />, title: "Switch licenses", subtitle: "Exchange foreign license" },
+      { id: "fix-tickets", icon: <FixTicketsIcon />, title: "Fix tickets", subtitle: "Pay, reduce, or fight the ticket." },
     ],
   },
   {
@@ -25,7 +25,7 @@ const SERVICES = [
     bgColor: "#E3F2FD",
     items: [
       { id: "study-permit", icon: <StudyPermitIcon />, title: "Study Permit", subtitle: "Apply or extend your study permit" },
-      { id: "work-permit",  icon: <WorkPermitIcon />, title: "Work Permit",  subtitle: "Open or employer-specific permits" },
+      { id: "work-permit", icon: <WorkPermitIcon />, title: "Work Permit", subtitle: "Open or employer-specific permits" },
     ],
   },
 ]
