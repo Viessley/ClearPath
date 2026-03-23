@@ -21,20 +21,20 @@ public class AIService {
 
     public String chat(Map<String, String> session, String userMessage) {
         try {
-            // Agent 1: Customer Service — generate initial guidance
             String servicePrompt = buildServicePrompt(session, userMessage);
             String serviceResponse = extractText(callGemini(buildGeminiRequest(servicePrompt, false)));
-            System.out.println("Agent 1 (Service): " + serviceResponse);
+            System.out.println("Agent 1: Service response generated.");
 
-            // Agent 2: Validation — verify against official sources via Google Search
             String validationPrompt = buildValidationPrompt(serviceResponse);
             String validatedResponse = extractText(callGemini(buildGeminiRequest(validationPrompt, true)));
-            System.out.println("Agent 2 (Validation): " + validatedResponse);
+            System.out.println("Agent 2: Validation complete.");
+            if (!serviceResponse.equals(validatedResponse)) {
+                System.out.println("️Agent 2 made corrections.");
+            }
 
-            // Agent 3: Plain Language — simplify for the user
             String plainPrompt = buildPlainLanguagePrompt(validatedResponse);
             String finalResponse = extractText(callGemini(buildGeminiRequest(plainPrompt, false)));
-            System.out.println("Agent 3 (Plain Language): " + finalResponse);
+            System.out.println("Agent 3: Plain language output ready.");
 
             return finalResponse;
 
@@ -48,26 +48,16 @@ public class AIService {
             return """
                 {
                     "contents": [
-                        {
-                            "parts": [
-                                {"text": "%s"}
-                            ]
-                        }
+                        {"parts": [{"text": "%s"}]}
                     ],
-                    "tools": [
-                        {"google_search": {}}
-                    ]
+                    "tools": [{"google_search": {}}]
                 }
                 """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
         } else {
             return """
                 {
                     "contents": [
-                        {
-                            "parts": [
-                                {"text": "%s"}
-                            ]
-                        }
+                        {"parts": [{"text": "%s"}]}
                     ]
                 }
                 """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
@@ -84,6 +74,8 @@ public class AIService {
                 You are ClearPath, an AI assistant helping newcomers navigate
                 Canadian government processes.
                 
+                This user is going through the Ontario driver's license process.
+                
                 User's background from decision tree:
                 %s
                 
@@ -92,6 +84,7 @@ public class AIService {
                 
                 Provide specific guidance for their situation.
                 Include document requirements, steps, fees, and locations.
+                Stay focused on the Ontario driver's license process only.
                 """.formatted(sessionJson, userMessage);
 
         } catch (Exception e) {
@@ -102,50 +95,65 @@ public class AIService {
     // Agent 2: Validation
     private String buildValidationPrompt(String serviceResponse) {
         return """
-            You are a fact-checking agent specializing in Ontario driving regulations.
+            You are a fact-checking agent for Ontario driving regulations.
             
-            Use Google Search to verify EVERY claim in the following guidance:
+            Use Google Search to verify each factual claim below against
+            official sources (ontario.ca, drivetest.ca, canada.ca).
+            
+            Original:
             %s
             
-            For each claim, check against official sources:
-            - ontario.ca
-            - drivetest.ca
-            - Service Ontario official pages
-            
-            You must:
-            - Verify document requirements are current and accurate
-            - Verify fees match official current amounts
-            - Verify steps are in the correct order
-            - Fix any inaccuracy with the correct information
-            - At the end, list your sources as [Source: URL]
-            
-            Output the corrected guidance with sources.
-            If something cannot be verified, flag it as [UNVERIFIED].
+            Output ONLY the corrected version of the original text.
+            - If everything is correct, return it unchanged.
+            - If anything is wrong, fix it silently.
+            - Do not add commentary, do not explain what you changed.
+            - Do not add any verification markers or source URLs.
+            - Just output the clean, corrected guidance.
             """.formatted(serviceResponse);
     }
 
     // Agent 3: Plain Language
     private String buildPlainLanguagePrompt(String validatedResponse) {
         return """
-            You are a plain language specialist. Rewrite the following
-            guidance for an international student with intermediate English.
+            You are formatting a cheatsheet for a newcomer going to complete
+            a government task. Extract from the following and restructure.
             
             Original:
             %s
             
+            Output in this exact format:
+            
+            **Your Steps:**
+            1. [Step title in 5 words or less]
+               → [One sentence: what to do]
+            2. [Next step]
+               → [One sentence]
+            (keep steps in order, typically 3-5 steps)
+            
+            **Document Checklist:**
+            | Document | Requirement |
+            | [document name] | [what it must satisfy, e.g. "Original, not expired"] |
+            | [document name] | [requirement] |
+            
+            **Cost:**
+            - Total: $[amount] (before tax)
+            - Includes: [brief breakdown in one line]
+            - Other costs: [if any, one line]
+            
+            **Where:**
+            - [Location name or website]
+            - [How to book if applicable]
+            
             Rules:
-            - Every sentence must carry useful information — cut filler
-            - One idea per sentence
-            - Use action verbs: "Bring your passport" not "You will need to bring your passport"
-            - Replace complex words with simple ones: "valid" not "currently unexpired"
-            - Use "you" and direct instructions
-            - Group related info together, use bullet points for action steps
-            - No greetings, no "Good luck", no encouragement padding
-            - If there are [Source: URL] references, keep them at the end
-            - Aim for maximum clarity with minimum words
+            - No greetings, no encouragement, no filler
+            - No explanations of WHY — only WHAT and HOW
+            - Remove all source URLs
+            - Each step must be actionable — something the user physically does
+            - Document checklist must be specific to this user's situation
+            - If something needs more detail, add [Details] tag after it
+              so the frontend can add a "Tell me more" button there
             """.formatted(validatedResponse);
     }
-
 
     public CheatsheetResponse generateCheatsheet(String prompt) {
         String requestBody = buildGeminiRequest(prompt);
