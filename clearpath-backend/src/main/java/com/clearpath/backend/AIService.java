@@ -13,84 +13,79 @@ import java.util.Map;
 @Service
 public class AIService {
 
-    @Value("${anthropic.api.key}")
+    @Value("${gemini.api.key}")
     private String apiKey;
+
+    private static final String GEMINI_URL =
+            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
     public String chat(Map<String, String> session, String userMessage) {
 
         String prompt = buildPrompt(session, userMessage);
-
-        String requestBody = """
-                {
-                    "model": "claude-haiku-4-5-20251001",
-                    "max_tokens": 1024,
-                    "messages": [
-                        {
-                            "role": "user",
-                            "content": "%s"
-                        }
-                    ]
-                }
-                """.formatted(prompt.replace("\"", "\\\""));
+        String requestBody = buildGeminiRequest(prompt);
 
         try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.anthropic.com/v1/messages"))
-                    .header("Content-Type", "application/json")
-                    .header("x-api-key", apiKey)
-                    .header("anthropic-version", "2023-06-01")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
-
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-
-            return response.body();
-
+            String responseBody = callGemini(requestBody);
+            return extractText(responseBody);
         } catch (Exception e) {
             return "AI service error: " + e.getMessage();
         }
     }
 
     public CheatsheetResponse generateCheatsheet(String prompt) {
-        String requestBody = """
-            {
-                "model": "claude-haiku-4-5-20251001",
-                "max_tokens": 2048,
-                "messages": [
-                    {
-                        "role": "user",
-                        "content": "%s"
-                    }
-                ]
-            }
-            """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+        String requestBody = buildGeminiRequest(prompt);
 
         try {
-            HttpClient client = HttpClient.newHttpClient();
-            HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.anthropic.com/v1/messages"))
-                    .header("Content-Type", "application/json")
-                    .header("x-api-key", apiKey)
-                    .header("anthropic-version", "2023-06-01")
-                    .POST(HttpRequest.BodyPublishers.ofString(requestBody))
-                    .build();
+            String responseBody = callGemini(requestBody);
+            String content = extractText(responseBody);
 
-            HttpResponse<String> response = client.send(request,
-                    HttpResponse.BodyHandlers.ofString());
-
-            // Parse Claude's response envelope
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode root = mapper.readTree(response.body());
-            String content = root.path("content").get(0).path("text").asText();
-
-            // Parse the JSON AI returned into CheatsheetResponse
             return mapper.readValue(content, CheatsheetResponse.class);
-
         } catch (Exception e) {
             return null;
         }
+    }
+
+    // ── Shared helpers ──
+
+    private String buildGeminiRequest(String prompt) {
+        return """
+                {
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": "%s"}
+                            ]
+                        }
+                    ]
+                }
+                """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+    }
+
+    private String callGemini(String requestBody) throws Exception {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(GEMINI_URL + apiKey))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(requestBody))
+                .build();
+
+        HttpResponse<String> response = client.send(request,
+                HttpResponse.BodyHandlers.ofString());
+
+        return response.body();
+    }
+
+    private String extractText(String responseBody) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(responseBody);
+        return root.path("candidates")
+                .path(0)
+                .path("content")
+                .path("parts")
+                .path(0)
+                .path("text")
+                .asText();
     }
 
     private String buildPrompt(Map<String, String> session, String userMessage) {
