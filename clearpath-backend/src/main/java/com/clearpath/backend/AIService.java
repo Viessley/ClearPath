@@ -20,18 +20,132 @@ public class AIService {
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
     public String chat(Map<String, String> session, String userMessage) {
-
-        String prompt = buildPrompt(session, userMessage);
-        String requestBody = buildGeminiRequest(prompt);
-
         try {
-            String responseBody = callGemini(requestBody);
-            System.out.println("Gemini raw response: " + responseBody);
-            return extractText(responseBody);
+            // Agent 1: Customer Service — generate initial guidance
+            String servicePrompt = buildServicePrompt(session, userMessage);
+            String serviceResponse = extractText(callGemini(buildGeminiRequest(servicePrompt, false)));
+            System.out.println("Agent 1 (Service): " + serviceResponse);
+
+            // Agent 2: Validation — verify against official sources via Google Search
+            String validationPrompt = buildValidationPrompt(serviceResponse);
+            String validatedResponse = extractText(callGemini(buildGeminiRequest(validationPrompt, true)));
+            System.out.println("Agent 2 (Validation): " + validatedResponse);
+
+            // Agent 3: Plain Language — simplify for the user
+            String plainPrompt = buildPlainLanguagePrompt(validatedResponse);
+            String finalResponse = extractText(callGemini(buildGeminiRequest(plainPrompt, false)));
+            System.out.println("Agent 3 (Plain Language): " + finalResponse);
+
+            return finalResponse;
+
         } catch (Exception e) {
             return "AI service error: " + e.getMessage();
         }
     }
+
+    private String buildGeminiRequest(String prompt, boolean withSearch) {
+        if (withSearch) {
+            return """
+                {
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": "%s"}
+                            ]
+                        }
+                    ],
+                    "tools": [
+                        {"google_search": {}}
+                    ]
+                }
+                """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+        } else {
+            return """
+                {
+                    "contents": [
+                        {
+                            "parts": [
+                                {"text": "%s"}
+                            ]
+                        }
+                    ]
+                }
+                """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+        }
+    }
+
+    // Agent 1: Customer Service
+    private String buildServicePrompt(Map<String, String> session, String userMessage) {
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String sessionJson = mapper.writeValueAsString(session);
+
+            return """
+                You are ClearPath, an AI assistant helping newcomers navigate
+                Canadian government processes.
+                
+                User's background from decision tree:
+                %s
+                
+                User's message:
+                %s
+                
+                Provide specific guidance for their situation.
+                Include document requirements, steps, fees, and locations.
+                """.formatted(sessionJson, userMessage);
+
+        } catch (Exception e) {
+            return userMessage;
+        }
+    }
+
+    // Agent 2: Validation
+    private String buildValidationPrompt(String serviceResponse) {
+        return """
+            You are a fact-checking agent specializing in Ontario driving regulations.
+            
+            Use Google Search to verify EVERY claim in the following guidance:
+            %s
+            
+            For each claim, check against official sources:
+            - ontario.ca
+            - drivetest.ca
+            - Service Ontario official pages
+            
+            You must:
+            - Verify document requirements are current and accurate
+            - Verify fees match official current amounts
+            - Verify steps are in the correct order
+            - Fix any inaccuracy with the correct information
+            - At the end, list your sources as [Source: URL]
+            
+            Output the corrected guidance with sources.
+            If something cannot be verified, flag it as [UNVERIFIED].
+            """.formatted(serviceResponse);
+    }
+
+    // Agent 3: Plain Language
+    private String buildPlainLanguagePrompt(String validatedResponse) {
+        return """
+            You are a plain language specialist. Rewrite the following
+            guidance for an international student with intermediate English.
+            
+            Original:
+            %s
+            
+            Rules:
+            - Every sentence must carry useful information — cut filler
+            - One idea per sentence
+            - Use action verbs: "Bring your passport" not "You will need to bring your passport"
+            - Replace complex words with simple ones: "valid" not "currently unexpired"
+            - Use "you" and direct instructions
+            - Group related info together, use bullet points for action steps
+            - No greetings, no "Good luck", no encouragement padding
+            - If there are [Source: URL] references, keep them at the end
+            - Aim for maximum clarity with minimum words
+            """.formatted(validatedResponse);
+    }
+
 
     public CheatsheetResponse generateCheatsheet(String prompt) {
         String requestBody = buildGeminiRequest(prompt);
