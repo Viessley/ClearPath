@@ -11,12 +11,6 @@ import java.util.Map;
 public class CheatsheetController {
 
     @Autowired
-    private SessionValidator sessionValidator;
-
-    @Autowired
-    private AIPromptBuilder aiPromptBuilder;
-
-    @Autowired
     private AIService aiService;
 
     @PostMapping("/generate")
@@ -24,37 +18,24 @@ public class CheatsheetController {
 
         Map<String, String> session = request.getSession();
 
-        // Step 1: Validate session
-        String validationError = sessionValidator.getValidationError(session);
-        if (validationError != null) {
+        if (session == null || session.isEmpty()) {
             Map<String, Object> error = new HashMap<>();
-            error.put("error", validationError);
+            error.put("error", "No session data provided");
             return error;
         }
 
-        // Step 2: Build prompt
-        String prompt = aiPromptBuilder.buildPrompt(session);
+        // Use the 3-agent pipeline via chat method
+        String result = aiService.chat(session,
+                "Based on my completed decision tree, generate my personalized cheatsheet for getting an Ontario driver's license. Include: steps to follow, documents to bring, requirements to check, where to go, and costs.");
 
-        // Step 3: Send to AI and parse response
-        CheatsheetResponse cheatsheet = aiService.generateCheatsheet(prompt);
-        if (cheatsheet == null) {
-            Map<String, Object> error = new HashMap<>();
-            error.put("error", "AI service failed to generate cheatsheet");
-            return error;
-        }
-
-        // Step 4: Return cheatsheet
         Map<String, Object> response = new HashMap<>();
-        response.put("profile", cheatsheet.getProfile());
-        response.put("steps", cheatsheet.getSteps());
-        response.put("warnings", cheatsheet.getWarnings());
-        response.put("aiNotes", cheatsheet.getAiNotes());
+        response.put("cheatsheet", result);
+        response.put("session", session);
         return response;
     }
 
     @PostMapping("/update")
     public Map<String, Object> update(@RequestBody CheatsheetUpdateRequest request) {
-        // TODO: implement update logic
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Coming soon.");
         return response;
