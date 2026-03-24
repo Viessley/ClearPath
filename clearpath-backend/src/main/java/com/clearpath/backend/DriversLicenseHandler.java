@@ -587,11 +587,11 @@ public class DriversLicenseHandler {
     public Map<String, Object> handleP1Q3(String value) {
         return switch (value) {
             case "Yes" -> {
-                Map<String, Object> response = questionBuilder.P1Q3();
-                response.put("type",       "NEXT_QUESTION");
+                Map<String, Object> response = questionBuilder.P1Q3_1();
+                response.put("type", "NEXT_QUESTION");
                 response.put("questionId", "P1Q3.1");
-                response.put("feedback",   "Great! Which country issued your license?");
-                response.put("done",       false);
+                response.put("feedback", "Great! Which country issued your license?");
+                response.put("done", false);
                 yield response;
             }
             case "No" -> {

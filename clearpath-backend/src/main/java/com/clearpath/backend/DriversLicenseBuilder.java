@@ -255,6 +255,17 @@ public class DriversLicenseBuilder {
     public Map<String, Object> P1Q3() {
         Map<String, Object> response = new HashMap<>();
         response.put("question", "Do you have a valid driver's license from another country?");
+        response.put("options", List.of(
+                Map.of("value", "Yes", "label", "Yes"),
+                Map.of("value", "No", "label", "No"),
+                Map.of("value", "Expired", "label", "Expired / Lost")
+        ));
+        return response;
+    }
+
+    public Map<String, Object> P1Q3_1() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("question", "Which country issued your license?");
         if (countryOptions == null) {
             countryOptions = new ArrayList<>();
             String[] countryCodes = Locale.getISOCountries();
@@ -266,7 +277,6 @@ public class DriversLicenseBuilder {
                 ));
             }
         }
-
         response.put("options", countryOptions);
         return response;
     }
