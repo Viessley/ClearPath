@@ -95,12 +95,12 @@ export default function CheatsheetPage() {
     return text
       .split("\n")
       .map((line) => line.trim())
-      .filter((line) => line && line !== "---" && !line.startsWith("|--"))
+      .filter((line) => line && line !== "---" && !line.startsWith("|--") && !line.startsWith("|:") && !line.startsWith("| ---"))
       .map((line, i) => {
         // Table rows
         if (line.startsWith("|")) {
           const cells = line.split("|").filter((c) => c.trim());
-          if (cells.length === 2) {
+          if (cells.length === 2 && cells[0].trim() !== "Document") {
             return (
               <div key={i} className="flex justify-between py-2 border-b" style={{ borderColor: "#E5E7EB" }}>
                 <span className="text-sm font-medium" style={{ color: "#111827" }}>{cells[0].trim()}</span>
