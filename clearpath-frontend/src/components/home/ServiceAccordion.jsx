@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import ServiceItem from './ServiceItem'
+import { useNavigate } from 'react-router-dom'
 
 export default function ServiceAccordion({ category, bgColor, items, selected, onToggle }) {
   const [isOpen, setIsOpen] = useState(true)
+  const navigate = useNavigate()
 
   const selectedCount = items.filter(item => selected[item.id]).length
 
@@ -42,6 +44,7 @@ export default function ServiceAccordion({ category, bgColor, items, selected, o
           <div className="flex justify-end px-4 py-3">
             <button
               disabled={selectedCount === 0}
+              onClick={() => navigate('/decision-tree')}
               className="text-sm font-semibold px-5 py-2"
               style={{
                 background: selectedCount > 0 ? "#5B9D93" : "#9CA3AF",
