@@ -205,6 +205,7 @@ public class AIService {
     }
 
     private String extractText(String responseBody) throws Exception {
+        System.out.println("Gemini raw: " + responseBody.substring(0, Math.min(300, responseBody.length())));
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(responseBody);
         String text = root.path("candidates")
