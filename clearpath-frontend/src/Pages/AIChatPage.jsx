@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
 import Mascot from "../components/shared/Mascot";
 
-const API_BASE = "http://lclearpath-backend-sc9k.onrender.com/api/drivers-license";
+const API_BASE = "https://lclearpath-backend-sc9k.onrender.com/api/drivers-license";
 
 export default function AIChatPage() {
   const location = useLocation();

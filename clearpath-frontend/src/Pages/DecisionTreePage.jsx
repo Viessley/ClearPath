@@ -4,7 +4,7 @@ import TopBar from "../components/layout/TopBar";
 import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
-const API_BASE = "http://clearpath-backend-sc9k.onrender.com/api/drivers-license";
+const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
 
 export default function DecisionTreePage() {
   const navigate = useNavigate();

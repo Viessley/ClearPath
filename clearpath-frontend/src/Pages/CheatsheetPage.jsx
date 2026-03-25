@@ -4,7 +4,7 @@ import TopBar from "../components/layout/TopBar";
 import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
-const API_BASE = "http://localhost:8080/api/cheatsheet";
+const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
 
 function LoadingStages() {
   const [stage, setStage] = useState(0);
