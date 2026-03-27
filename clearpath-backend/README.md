@@ -1,30 +1,51 @@
 # ClearPath
-You can view the interactive prototypes and design systems on Figma:
-https://www.figma.com/design/cHpfKMuOWHhUbrPEzadZ9R/ClearPath?node-id=0-1&p=f&t=gVmb2lbWBxylsf8D-0
 
-ClearPath is an AI-assisted guidance platform designed to reduce 
-information fragmentation for newcomers in Canada. It walks users 
-through complex government processes using a structured decision tree, 
-and connects them with personalized AI support when their situation 
-is unique.
+AI-assisted guidance platform for newcomers navigating Canadian government processes.
 
-## Current Status
-🚧 Phase 1 in active development (Jan - Apr 2026)
+## Live Demo
+- Frontend: https://clear-path-brown.vercel.app
+- Backend: https://clearpath-backend-sc9k.onrender.com
 
 ## Tech Stack
-- Backend: Java, Spring Boot
-- Frontend: React (coming soon)
-- AI Integration: planned
+- Frontend: React + Vite + TailwindCSS
+- Backend: Java Spring Boot 4.1.0-M1
+- AI: Google Gemini 2.5 Flash (3-Agent Pipeline)
+- Database: H2 (dev)
+- Deployment: Vercel + Render
+# ClearPath
 
-## Project Structure
-- Controller → routing
-- Handler → decision logic  
-- Builder → question templates
+AI-assisted guidance platform for newcomers navigating Canadian government processes.
 
-## Phase 1
-Driver's License application guidance for international students in Ontario.
+## Live Demo
+- Frontend: https://clear-path-brown.vercel.app
+- Backend: https://clearpath-backend-sc9k.onrender.com
 
-## Author
-RedBloodSocker（Zhida Wang）
+## Tech Stack
+- Frontend: React + Vite + TailwindCSS
+- Backend: Java Spring Boot 4.1.0-M1
+- AI: Google Gemini 2.5 Flash (3-Agent Pipeline)
+- Database: H2 (dev)
+- Deployment: Vercel + Render
 
+## Run Locally
+```bash
+# Backend
+cd clearpath-backend
+./mvnw spring-boot:run
 
+# Frontend
+cd clearpath-frontend
+npm install
+npm run dev
+```
+## Run Locally
+```bash
+# Backend
+cd clearpath-backend
+./mvnw spring-boot:run
+
+# Frontend
+cd clearpath-frontend
+npm install
+npm run dev
+```
