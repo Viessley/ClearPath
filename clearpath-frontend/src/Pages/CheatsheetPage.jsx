@@ -77,7 +77,7 @@ export default function CheatsheetPage() {
 
   // Parse markdown into 4 sections
   function parseCheatsheet(text) {
-    const result = { steps: "", documents: "", cost: "", where: "" };
+    const result = { steps: "", documents: "", cost: "", tips: "" };
     const parts = text.split("**");
 
     for (let i = 0; i < parts.length; i++) {
@@ -85,7 +85,7 @@ export default function CheatsheetPage() {
       if (label.includes("your steps")) result.steps = parts[i + 1] || "";
       if (label.includes("document checklist")) result.documents = parts[i + 1] || "";
       if (label.includes("cost")) result.cost = parts[i + 1] || "";
-      if (label.includes("where")) result.where = parts[i + 1] || "";
+      if (label.includes("tips")) result.where = parts[i + 1] || "";
     }
     return result;
   }
@@ -182,19 +182,19 @@ export default function CheatsheetPage() {
               </div>
             )}
 
+            {/* Tips */}
+            {sections.tips && (
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#F59E0B", backgroundColor: "#FFFBEB" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "#B45309" }}>Tips from Experience</h3>
+                {renderLines(sections.tips)}
+              </div>
+            )}
+
             {/* Cost */}
             {sections.cost && (
               <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
                 <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Cost</h3>
                 {renderLines(sections.cost)}
-              </div>
-            )}
-
-            {/* Where */}
-            {sections.where && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Where</h3>
-                {renderLines(sections.where)}
               </div>
             )}
 
