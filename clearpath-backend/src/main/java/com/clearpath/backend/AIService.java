@@ -143,10 +143,11 @@ public class AIService {
                 - Total: $[amount] (before tax)
                 - Includes: [brief breakdown in one line]
                 - Other costs: [if any, one line]
-                
-                **Where:**
-                - [Location name or website]
-                - [How to book if applicable]
+         
+                **Tips:**
+                - [specific warning based on this user's situation]
+                - [common mistake people in similar situations make]
+                - [thing to prepare/check that is easy to forget]
                 
                 Rules:
                 - No greetings, no encouragement, no filler
@@ -154,6 +155,8 @@ public class AIService {
                 - Remove all source URLs
                 - Each step must be actionable — something the user physically does
                 - Document checklist must be specific to this user's situation
+                - Tips must be specific to this user's status and documents, not generic advice
+                - Each tip should be something that could cause a failed visit or wasted trip if ignored
                 - If something needs more detail, add [Details] tag after it
                   so the frontend can add a "Tell me more" button there
                   Use only standard ASCII characters. No emojis, no special Unicode symbols, no arrows like →. Use plain text dashes and colons only
