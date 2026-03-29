@@ -77,18 +77,18 @@ export default function CheatsheetPage() {
 
   // Parse markdown into 4 sections
   function parseCheatsheet(text) {
-    const result = { steps: "", documents: "", cost: "", tips: "" };
-    const parts = text.split("**");
+  const result = { steps: "", documents: "", cost: "", tips: "" };
+  const parts = text.split("**");
 
-    for (let i = 0; i < parts.length; i++) {
-      const label = parts[i].toLowerCase().trim();
-      if (label.includes("your steps")) result.steps = parts[i + 1] || "";
-      if (label.includes("document checklist")) result.documents = parts[i + 1] || "";
-      if (label.includes("cost")) result.cost = parts[i + 1] || "";
-      if (label.includes("tips")) result.where = parts[i + 1] || "";
-    }
-    return result;
+  for (let i = 0; i < parts.length; i++) {
+    const label = parts[i].toLowerCase().trim();
+    if (label === "your steps:") result.steps = parts[i + 1] || "";
+    if (label === "document checklist:") result.documents = parts[i + 1] || "";
+    if (label === "cost:") result.cost = parts[i + 1] || "";
+    if (label === "tips:") result.tips = parts[i + 1] || "";
   }
+  return result;
+}
 
   // Render lines as clean list
   function renderLines(text) {
