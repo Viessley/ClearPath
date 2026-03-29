@@ -123,7 +123,9 @@ export default function DecisionTreePage() {
     setAiInputType(prev.aiInputType);
   }
 
-  function goToAIChat() { navigate("/ai-chat", { state: { session } }); }
+  function goToAIChat() {
+    navigate("/ai-chat", { state: { session, questionId, feedback } });
+  }
   function goToCheatsheet() { navigate("/cheatsheet", { state: { session } }); }
 
   const stepCount = history.length + 1;
@@ -195,21 +197,21 @@ export default function DecisionTreePage() {
                 return (
                   <div>
                     {!showMore && (
-                    <div className="grid grid-cols-2 gap-2">
-                      {topOptions.map((opt) => {
-                        const isSelected = selectedValue === opt.value;
-                        return (
-                          <button key={opt.value} onClick={() => { handleSelect(opt.value); setShowMore(false); }}
-                            className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all duration-150 ${isSelected ? "shadow-sm" : "hover:border-gray-300"}`}
-                            style={{ borderColor: isSelected ? "#5B9D93" : "#E5E7EB", backgroundColor: isSelected ? "#F0FAF8" : "#FFFFFF", color: "#111827" }}>
-                            <div className="flex items-center justify-between">
-                              <span>{opt.label}</span>
-                              {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B9D93" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        {topOptions.map((opt) => {
+                          const isSelected = selectedValue === opt.value;
+                          return (
+                            <button key={opt.value} onClick={() => { handleSelect(opt.value); setShowMore(false); }}
+                              className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all duration-150 ${isSelected ? "shadow-sm" : "hover:border-gray-300"}`}
+                              style={{ borderColor: isSelected ? "#5B9D93" : "#E5E7EB", backgroundColor: isSelected ? "#F0FAF8" : "#FFFFFF", color: "#111827" }}>
+                              <div className="flex items-center justify-between">
+                                <span>{opt.label}</span>
+                                {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B9D93" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
                     )}
 
                     <button onClick={() => setShowMore(!showMore)}
