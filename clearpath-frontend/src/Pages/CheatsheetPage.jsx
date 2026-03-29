@@ -95,7 +95,7 @@ export default function CheatsheetPage() {
     return text
       .split("\n")
       .map((line) => line.trim())
-      .filter((line) => line && line !== "---" && !line.startsWith("|--") && !line.startsWith("|:") && !line.startsWith("| ---"))
+      .filter((line) => line && !line.includes("---"))
       .map((line, i) => {
         // Table rows
         if (line.startsWith("|")) {
@@ -166,14 +166,7 @@ export default function CheatsheetPage() {
         {/* Cheatsheet Content */}
         {sections && (
           <div className="space-y-4">
-            {/* Steps */}
-            {sections.steps && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Your Steps</h3>
-                {renderLines(sections.steps)}
-              </div>
-            )}
-
+           
             {/* Documents */}
             {sections.documents && (
               <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
@@ -195,6 +188,14 @@ export default function CheatsheetPage() {
               <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
                 <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Cost</h3>
                 {renderLines(sections.cost)}
+              </div>
+            )}
+
+             {/* Steps */}
+            {sections.steps && (
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Your Steps</h3>
+                {renderLines(sections.steps)}
               </div>
             )}
 
