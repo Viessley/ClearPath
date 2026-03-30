@@ -5,9 +5,6 @@ import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
-const [expandedDetails, setExpandedDetails] = useState({});
-const [detailsLoading, setDetailsLoading] = useState({});
-const [detailsContent, setDetailsContent] = useState({});
 
 function LoadingStages() {
   const [stage, setStage] = useState(0);
@@ -46,6 +43,10 @@ export default function CheatsheetPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sections, setSections] = useState(null);
+
+  const [expandedDetails, setExpandedDetails] = useState({});
+  const [detailsLoading, setDetailsLoading] = useState({});
+  const [detailsContent, setDetailsContent] = useState({});
 
   useEffect(() => {
     if (Object.keys(session).length === 0) {
