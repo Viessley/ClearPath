@@ -77,18 +77,18 @@ export default function CheatsheetPage() {
 
   // Parse markdown into 4 sections
   function parseCheatsheet(text) {
-  const result = { steps: "", documents: "", cost: "", tips: "" };
-  const parts = text.split("**");
+    const result = { steps: "", documents: "", cost: "", tips: "" };
+    const parts = text.split("**");
 
-  for (let i = 0; i < parts.length; i++) {
-    const label = parts[i].toLowerCase().trim();
-    if (label === "your steps:") result.steps = parts[i + 1] || "";
-    if (label === "document checklist:") result.documents = parts[i + 1] || "";
-    if (label === "cost:") result.cost = parts[i + 1] || "";
-    if (label === "tips:") result.tips = parts[i + 1] || "";
+    for (let i = 0; i < parts.length; i++) {
+      const label = parts[i].toLowerCase().trim();
+      if (label === "your steps:") result.steps = parts[i + 1] || "";
+      if (label === "document checklist:") result.documents = parts[i + 1] || "";
+      if (label === "cost:") result.cost = parts[i + 1] || "";
+      if (label === "tips:") result.tips = parts[i + 1] || "";
+    }
+    return result;
   }
-  return result;
-}
 
   // Render lines as clean list
   function renderLines(text) {
@@ -166,7 +166,32 @@ export default function CheatsheetPage() {
         {/* Cheatsheet Content */}
         {sections && (
           <div className="space-y-4">
-           
+
+            {/* Profile Summary */}
+            <div className="rounded-xl border-2 p-4 mb-1" style={{ borderColor: "#A8D5CF", backgroundColor: "#F0FAF8" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "#5B9D93" }}>Your Profile</h3>
+              <div className="space-y-1 text-sm" style={{ color: "#111827" }}>
+                {session.P1Q1 && session.P1Q1 !== "age18plus" && (
+                  <p>Age: {session.P1Q1 === "age16to17" ? "16-17" : "Under 16"}</p>
+                )}
+                {session.P1Q2 && (
+                  <p>Status: {{
+                    "international_student": "International Student",
+                    "work_permit": "Work Permit Holder",
+                    "visitor": "Visitor",
+                    "permanent_resident": "Permanent Resident",
+                    "protected_person_refugee": "Protected Person / Refugee"
+                  }[session.P1Q2] || session.P1Q2}</p>
+                )}
+                {session["P1Q3.1"] && (
+                  <p>From: {new Intl.DisplayNames(['en'], { type: 'region' }).of(session["P1Q3.1"])}</p>
+                )}
+                {session.P1Q3 === "Yes" && (
+                  <p>Foreign license: Yes</p>
+                )}
+              </div>
+            </div>
+
             {/* Documents */}
             {sections.documents && (
               <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
@@ -191,7 +216,7 @@ export default function CheatsheetPage() {
               </div>
             )}
 
-             {/* Steps */}
+            {/* Steps */}
             {sections.steps && (
               <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
                 <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Your Steps</h3>
