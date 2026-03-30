@@ -174,10 +174,35 @@ export default function CheatsheetPage() {
         }
         // Sub-items (lines starting with -)
         if (line.startsWith("-")) {
+          const hasDetails = line.includes("[Details]");
+          const cleanLine = line.replace("[Details]", "").replace(/^-\s*/, "").trim();
+          const key = `detail-${i}`;
+          const isOpen = expandedDetails[key];
+
           return (
-            <p key={i} className="text-sm pl-9 py-0.5" style={{ color: "#4B5563" }}>
-              {line.replace(/^-\s*/, "- ")}
-            </p>
+            <div key={i}>
+              <p className="text-sm pl-9 py-0.5" style={{ color: "#4B5563" }}>
+                - {cleanLine}
+              </p>
+              {hasDetails && (
+                <button
+                  onClick={() => {
+                    setExpandedDetails(prev => ({ ...prev, [key]: !prev[key] }));
+                    if (!detailsContent[key] && !detailsLoading[key]) {
+                      fetchDetail(key, cleanLine);
+                    }
+                  }}
+                  className="text-xs font-medium ml-9 mt-1 mb-2"
+                  style={{ color: "#5B9D93" }}>
+                  {isOpen ? "Hide details" : "Show details"}
+                </button>
+              )}
+              {isOpen && (
+                <div className="text-xs rounded-lg px-3 py-2 ml-9 mb-2" style={{ backgroundColor: "#F0FAF8", color: "#4B5563" }}>
+                  {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
+                </div>
+              )}
+            </div>
           );
         }
         // Regular text
