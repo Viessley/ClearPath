@@ -150,6 +150,10 @@ public class AIService {
                 - [thing to prepare/check that is easy to forget]
                 
                 Rules:
+                - Tips must be specific to THIS user based on their session data
+                - Do NOT include tips about age requirements if user is already 18+
+                - Do NOT include generic advice that applies to everyone
+                - Every tip must address a real risk of a wasted trip or failed application for THIS specific user
                 - No greetings, no encouragement, no filler
                 - No explanations of WHY — only WHAT and HOW
                 - Remove all source URLs
