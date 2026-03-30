@@ -5,6 +5,9 @@ import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
+const [expandedDetails, setExpandedDetails] = useState({});
+const [detailsLoading, setDetailsLoading] = useState({});
+const [detailsContent, setDetailsContent] = useState({});
 
 function LoadingStages() {
   const [stage, setStage] = useState(0);
@@ -75,6 +78,26 @@ export default function CheatsheetPage() {
     }
   }
 
+  async function fetchDetail(key, title) {
+    setDetailsLoading(prev => ({ ...prev, [key]: true }));
+    try {
+      const res = await fetch(`https://clearpath-backend-sc9k.onrender.com/api/drivers-license/ai/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          session,
+          userMessage: `Explain in detail: ${title}. Keep it under 80 words. Plain language. No filler.`
+        }),
+      });
+      const data = await res.json();
+      setDetailsContent(prev => ({ ...prev, [key]: data.message || "No details available." }));
+    } catch (err) {
+      setDetailsContent(prev => ({ ...prev, [key]: "Could not load details." }));
+    } finally {
+      setDetailsLoading(prev => ({ ...prev, [key]: false }));
+    }
+  }
+
   // Parse markdown into 4 sections
   function parseCheatsheet(text) {
     const result = { steps: "", documents: "", cost: "", tips: "" };
@@ -101,10 +124,36 @@ export default function CheatsheetPage() {
         if (line.startsWith("|")) {
           const cells = line.split("|").filter((c) => c.trim());
           if (cells.length === 2 && cells[0].trim() !== "Document") {
+            const hasDetails = cells[1].includes("[Details]");
+            const requirement = cells[1].replace("[Details]", "").trim();
+            const docName = cells[0].trim();
+            const key = `detail-${i}`;
+            const isOpen = expandedDetails[key];
+
             return (
-              <div key={i} className="flex justify-between py-2 border-b" style={{ borderColor: "#E5E7EB" }}>
-                <span className="text-sm font-medium" style={{ color: "#111827" }}>{cells[0].trim()}</span>
-                <span className="text-xs text-right" style={{ color: "#4B5563", maxWidth: "55%" }}>{cells[1].trim()}</span>
+              <div key={i}>
+                <div className="flex justify-between py-2 border-b" style={{ borderColor: "#E5E7EB" }}>
+                  <span className="text-sm font-medium" style={{ color: "#111827" }}>{docName}</span>
+                  <span className="text-xs text-right" style={{ color: "#4B5563", maxWidth: "55%" }}>{requirement}</span>
+                </div>
+                {hasDetails && (
+                  <button
+                    onClick={() => {
+                      setExpandedDetails(prev => ({ ...prev, [key]: !prev[key] }));
+                      if (!detailsContent[key] && !detailsLoading[key]) {
+                        fetchDetail(key, docName);
+                      }
+                    }}
+                    className="text-xs font-medium mt-1 mb-2"
+                    style={{ color: "#5B9D93" }}>
+                    {isOpen ? "Hide details" : "Show details"}
+                  </button>
+                )}
+                {isOpen && (
+                  <div className="text-xs rounded-lg px-3 py-2 mb-2" style={{ backgroundColor: "#F0FAF8", color: "#4B5563" }}>
+                    {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
+                  </div>
+                )}
               </div>
             );
           }
