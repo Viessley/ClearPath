@@ -68,6 +68,11 @@ export default function CheatsheetPage() {
 
       if (data.error) {
         setError(data.error);
+      } else if (data.cheatsheet === "No response from AI." || !data.cheatsheet ||
+        data.cheatsheet.includes("quota") ||
+        data.cheatsheet.includes("429") ||
+        data.cheatsheet.trim() === "") {
+        setError("Our AI is taking a break — the free API quota has been used up. Please try again in a few hours. (Yes, the developer is broke.)");
       } else {
         console.log("Raw cheatsheet:", data.cheatsheet);
         setSections(parseCheatsheet(data.cheatsheet));
