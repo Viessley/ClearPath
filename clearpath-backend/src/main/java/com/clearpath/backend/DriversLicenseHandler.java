@@ -146,6 +146,15 @@ public class DriversLicenseHandler {
                 yield response;
             }
 
+            case "canadian_citizen" -> {
+                Map<String, Object> response = questionBuilder.P1Q3();
+                response.put("type", "NEXT_QUESTION");
+                response.put("feedback", "Great! As a Canadian citizen, you just need basic ID. Let's check if you have a foreign license.");
+                response.put("questionId", "P1Q3");
+                response.put("done", false);
+                yield response;
+            }
+
             case "permanent_resident" -> {
                 Map<String, Object> response = questionBuilder.P1Q2_1PR();
                 response.put("type", "NEXT_QUESTION");

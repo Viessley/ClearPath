@@ -71,6 +71,7 @@ public class DriversLicenseBuilder {
                 Map.of("value", "international_student",    "label", "International Student"),
                 Map.of("value", "work_permit",              "label", "Work Permit"),
                 Map.of("value", "visitor",                  "label", "Visitor"),
+                Map.of("value", "canadian_citizen", "label", "Canadian Citizen"),
                 Map.of("value", "permanent_resident",       "label", "Permanent Resident"),
                 Map.of("value", "protected_person_refugee", "label", "Protected Person/Refugee")
         ));
