@@ -3,11 +3,8 @@ import TopBar from '../components/layout/TopBar'
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
-import GetLicensedIcon from '../icons/Service/GetLicensedIcon'
-import SwitchLicensesIcon from '../icons/Service/SwitchLicensesIcon'
-import FixTicketsIcon from '../icons/Service/FixTicketsIcon'
-import StudyPermitIcon from '../icons/Service/StudyPermitIcon'
-import WorkPermitIcon from '../icons/Service/WorkPermitIcon'
+import { GetLicensedIcon, SwitchLicensesIcon, FixTicketsIcon, StudyPermitIcon, WorkPermitIcon } from '../icons/Service'
+
 
 
 const SERVICES = [
