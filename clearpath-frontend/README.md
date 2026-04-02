@@ -1,6 +1,4 @@
 # ClearPath
-You can view the interactive prototypes and design systems on Figma:
-https://www.figma.com/design/cHpfKMuOWHhUbrPEzadZ9R/ClearPath?node-id=0-1&p=f&t=gVmb2lbWBxylsf8D-0
 
 ClearPath is an AI-assisted guidance platform designed to reduce 
 information fragmentation for newcomers in Canada. It walks users 
