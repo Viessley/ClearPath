@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
-import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
@@ -321,7 +320,7 @@ export default function CheatsheetPage() {
         )}
       </main>
 
-      <BottomBar />
+    
     </div>
   );
 }

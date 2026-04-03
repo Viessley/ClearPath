@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
-import BottomBar from "../components/layout/BottomBar";
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
@@ -316,7 +315,7 @@ export default function DecisionTreePage() {
         )}
       </main>
 
-      <BottomBar />
+     
     </div>
   );
 }

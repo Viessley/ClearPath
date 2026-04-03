@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import TopBar from '../components/layout/TopBar'
-import BottomBar from '../components/layout/BottomBar'
 import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
 import { GetLicensedIcon, SwitchLicensesIcon, FixTicketsIcon, StudyPermitIcon, WorkPermitIcon } from '../icons/Service'
@@ -58,7 +57,7 @@ export default function HomePage() {
         ))}
       </div>
 
-      <BottomBar />
+    
     </div>
   )
 }
