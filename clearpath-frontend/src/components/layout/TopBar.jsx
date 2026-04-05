@@ -55,28 +55,28 @@ export default function TopBar() {
                 <p>Government transparency is valuable but often brings hassle. ClearPath exists to ease those headaches for you, leaving the strict administration to the government.</p>
 
                 <p>— Wesley</p></div>
-              onClick={() => {
+              <button onClick={() => {
                 setShowAnnouncement(false)
                 setHasNew(false)
                 localStorage.setItem('announcementSeen', 'true')
               }}
-              style={{
-                marginTop: "16px",
-                width: "100%",
-                padding: "12px",
-                background: "#0f766e",
-                color: "#fff",
-                borderRadius: "12px",
-                fontWeight: "600",
-                fontSize: "14px"
-              }}>
-              Got it! →
-            </button>
-          </div>
+                style={{
+                  marginTop: "16px",
+                  width: "100%",
+                  padding: "12px",
+                  background: "#0f766e",
+                  color: "#fff",
+                  borderRadius: "12px",
+                  fontWeight: "600",
+                  fontSize: "14px"
+                }}>
+                Got it! →
+              </button>
+            </div>
           </div>
         )}
 
-    </div >
+      </div>
     </>
   )
 }
