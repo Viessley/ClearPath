@@ -4,7 +4,7 @@ import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
 import { GetLicensedIcon, SwitchLicensesIcon, FixTicketsIcon, StudyPermitIcon, WorkPermitIcon } from '../icons/Service'
 
-
+const HAS_NEW_ANNOUNCEMENT = true
 
 const SERVICES = [
   {
@@ -57,7 +57,7 @@ export default function HomePage() {
         ))}
       </div>
 
-    
+
     </div>
   )
 }

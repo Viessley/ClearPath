@@ -1,5 +1,5 @@
 export { default as HamburgerIcon } from './HamburgerIcon'
-export { default as SettingsIcon } from './SettingsIcon'
+export { default as AnnouncementIcon } from './AnnouncementIcon'
 export { default as UserIcon } from './UserIcon'
 export { default as CameraIcon } from './CameraIcon'
 export { default as MicrophoneIcon } from './MicrophoneIcon'
