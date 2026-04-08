@@ -38,4 +38,13 @@ public class KitController {
     public List<Kit> getKits(@PathVariable Long userId){
         return kitRepository.findByUserId(userId);
     }
+
+
+    @DeleteMapping("/{kitId}")
+    public Map<String, Object> deleteKit(@PathVariable("kitId") Long kitId) {
+        kitRepository.deleteById(kitId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "Kit deleted successfully");
+        return response;
+    }
 }

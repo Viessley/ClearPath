@@ -1,4 +1,4 @@
-import { HamburgerIcon, AnnouncementIcon, UserIcon } from "../../icons/System"
+import { HamburgerIcon, AnnouncementIcon, RepoIcon } from "../../icons/System"
 import { useState } from 'react'
 import logo from '../../assets/clearpath-logo.png'
 
@@ -20,7 +20,7 @@ export default function TopBar() {
           <button onClick={() => setShowAnnouncement(true)}>
             <AnnouncementIcon showDot={hasNew} />
           </button>
-          <button><UserIcon size={22} /></button>
+          <button onClick={() => navigate('/repo')}><RepoIcon /></button>
         </div>
 
         {showAnnouncement && (
@@ -47,7 +47,7 @@ export default function TopBar() {
 
                 <h3>Update</h3>
                 <p>Report saving is coming to CheatSheetPage! The current free AI API key is maxed out (short on funds), so I’m swapping in a backup free key to test the save functionality. If all goes well, you'll be able to save CheatSheets to your personal account in a few hours. Thanks for understanding.</p>
-
+                <p>Notice: From now until midnight, all generated CheatSheet reports will consist of pre-set placeholder text for testing purposes. These are not real results—please do not rely on them until the update is complete.</p>
                 <h3>Vision</h3>
                 <p>Government transparency is valuable but often brings hassle. ClearPath exists to ease those headaches for you, leaving the strict administration to the government.</p>
 

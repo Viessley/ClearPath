@@ -59,6 +59,17 @@ export default function CheatsheetPage() {
 
   async function generateCheatsheet() {
     try {
+      // TEMP TEST
+      setSections({
+        summary: "You are eligible to get a G1 license in Ontario.",
+        requirements: "Valid passport, Study Permit, proof of address.",
+        steps: "1. Book G1 test\n2. Study handbook\n3. Pass the test",
+        cost: "Approximately $158.25",
+        tips: "Avoid Monday mornings at DriveTest."
+      });
+      setLoading(false);
+      return;
+      // END TEMP
       const res = await fetch(`${API_BASE}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -332,23 +343,24 @@ export default function CheatsheetPage() {
             )}
 
             {/* Actions */}
-            <div className="flex gap-3 mt-4">
-              <button
-                onClick={() => setShowSaveModal(true)}
-                className="w-full py-3 rounded-xl text-white text-sm font-medium mb-2"
+            <div className="flex flex-col gap-2 mt-4">
+              <button onClick={() => setShowSaveModal(true)}
+                className="w-full py-3 rounded-xl text-white text-sm font-medium"
                 style={{ backgroundColor: "#0f766e" }}>
                 Save to My Account
               </button>
-              <button onClick={() => navigate("/decision-tree")}
-                className="flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-all hover:bg-gray-50"
-                style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>
-                Start Over
-              </button>
-              <button onClick={() => navigate("/")}
-                className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:opacity-90"
-                style={{ backgroundColor: "#5B9D93" }}>
-                Home
-              </button>
+              <div className="flex gap-3">
+                <button onClick={() => navigate("/decision-tree")}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border-2"
+                  style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>
+                  Start Over
+                </button>
+                <button onClick={() => navigate("/")}
+                  className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium"
+                  style={{ backgroundColor: "#5B9D93" }}>
+                  Home
+                </button>
+              </div>
             </div>
           </div>
         )}
@@ -374,9 +386,7 @@ export default function CheatsheetPage() {
               Save your Cheatsheet
             </h2>
             <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
-              Your Cheatsheet will be saved to your ClearPath account. You can access it anytime.
-              <br /><br />
-              No thanks? You can always screenshot it. We won't judge. 📱
+              Cheatsheet will be saved to your ClearPath account. Access it anytime.
             </p>
             <button
               onClick={handleSave}
