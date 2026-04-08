@@ -24,8 +24,8 @@ export default function AuthPage() {
     }
 
     const url = isLogin
-      ? "http://localhost:8080/api/auth/login"
-      : "http://localhost:8080/api/auth/register";
+      ? "https://clearpath-backend-sc9k.onrender.com/api/auth/login"
+      : "https://clearpath-backend-sc9k.onrender.com/api/auth/register";
 
     const body = isLogin
       ? { email, password }
