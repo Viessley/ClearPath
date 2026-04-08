@@ -45,11 +45,8 @@ export default function TopBar() {
               <div><h2>ClearPath Updates</h2>
                 <p>Welcome! This page will track our roadmap and ideas. A feedback email is coming soon, which we will review daily. Special thanks to Stephen Gagne (Algonquin College) for 8 months of support in turning ClearPath into reality.</p>
 
-                <h3>Next Steps</h3>
-                <ul>
-                  <li><strong>Speed & Save:</strong> Faster CheatSheets that you can save.</li>
-                  <li><strong>The "Survival Kit":</strong> Upgrading the CheatSheet to include essential docs that help you bypass frustrating traps and confusing processes.</li>
-                </ul>
+                <h3>Update</h3>
+                <p>Report saving is coming to CheatSheetPage! The current free AI API key is maxed out (short on funds), so I’m swapping in a backup free key to test the save functionality. If all goes well, you'll be able to save CheatSheets to your personal account in a few hours. Thanks for understanding.</p>
 
                 <h3>Vision</h3>
                 <p>Government transparency is valuable but often brings hassle. ClearPath exists to ease those headaches for you, leaving the strict administration to the government.</p>

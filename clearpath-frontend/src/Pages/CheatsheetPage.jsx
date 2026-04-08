@@ -42,6 +42,7 @@ export default function CheatsheetPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [sections, setSections] = useState(null);
+  const [showSaveModal, setShowSaveModal] = useState(false);
 
   const [expandedDetails, setExpandedDetails] = useState({});
   const [detailsLoading, setDetailsLoading] = useState({});
@@ -305,6 +306,12 @@ export default function CheatsheetPage() {
 
             {/* Actions */}
             <div className="flex gap-3 mt-4">
+              <button
+                onClick={() => setShowSaveModal(true)}
+                className="w-full py-3 rounded-xl text-white text-sm font-medium mb-2"
+                style={{ backgroundColor: "#0f766e" }}>
+                Save to My Account
+              </button>
               <button onClick={() => navigate("/decision-tree")}
                 className="flex-1 py-2.5 rounded-xl text-sm font-medium border-2 transition-all hover:bg-gray-50"
                 style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>
@@ -320,7 +327,58 @@ export default function CheatsheetPage() {
         )}
       </main>
 
-    
+      {showSaveModal && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          zIndex: 999,
+          display: "flex",
+          alignItems: "flex-end",
+          padding: "24px"
+        }}>
+          <div style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "24px",
+            width: "100%",
+          }}>
+            <h2 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>
+              Save your Cheatsheet
+            </h2>
+            <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
+              Your Cheatsheet will be saved to your ClearPath account. You can access it anytime.
+              <br /><br />
+              No thanks? You can always screenshot it. We won't judge. 📱
+            </p>
+            <button
+              onClick={handleSave}
+              style={{
+                width: "100%",
+                padding: "12px",
+                background: "#0f766e",
+                color: "#fff",
+                borderRadius: "12px",
+                fontWeight: "600",
+                fontSize: "14px",
+                marginBottom: "8px"
+              }}>
+              Save it →
+            </button>
+            <button
+              onClick={() => setShowSaveModal(false)}
+              style={{
+                width: "100%",
+                padding: "12px",
+                background: "transparent",
+                color: "#6B7280",
+                fontSize: "13px"
+              }}>
+              No thanks, I'll screenshot
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
