@@ -84,6 +84,33 @@ export default function CheatsheetPage() {
     }
   }
 
+  async function handleSave() {
+    const token = localStorage.getItem("token");
+    const userId = localStorage.getItem("userId");
+
+    if (!token || !userId) {
+      navigate("/auth");
+      return;
+    }
+
+    const res = await fetch("https://clearpath-backend-sc9k.onrender.com/api/kits/save", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId: parseInt(userId),
+        title: "Ontario Driver's License",
+        serviceType: "drivers_license"
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data.kitId) {
+      setShowSaveModal(false);
+      alert("Saved! Your Report ID is #CP" + data.kitId);
+    }
+  }
+
   async function fetchDetail(key, title) {
     setDetailsLoading(prev => ({ ...prev, [key]: true }));
     try {
