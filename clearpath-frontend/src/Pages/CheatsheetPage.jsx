@@ -356,7 +356,58 @@ export default function CheatsheetPage() {
         )}
       </main>
 
-      {showSaveModal && (
+      {showSaveModal && !localStorage.getItem('token') && (
+        <div style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          zIndex: 999,
+          display: "flex",
+          alignItems: "flex-end",
+          padding: "24px"
+        }}>
+          <div style={{
+            background: "#fff",
+            borderRadius: "16px",
+            padding: "24px",
+            width: "100%",
+          }}>
+            <h2 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>
+              Save your Cheatsheet
+            </h2>
+            <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
+              Save your Cheatsheet and access it anytime from your Repo. Takes 30 seconds.
+            </p>
+            <button
+              onClick={navigate('/auth')}
+              style={{
+                width: "100%",
+                padding: "12px",
+                background: "#0f766e",
+                color: "#fff",
+                borderRadius: "12px",
+                fontWeight: "600",
+                fontSize: "14px",
+                marginBottom: "8px"
+              }}>
+              Sign up / Log in →
+            </button>
+            <button
+              onClick={() => setShowSaveModal(false)}
+              style={{
+                width: "100%",
+                padding: "12px",
+                background: "transparent",
+                color: "#6B7280",
+                fontSize: "13px"
+              }}>
+              No thanks, I'll screenshot
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showSaveModal && localStorage.getItem('token') && (
         <div style={{
           position: "fixed",
           top: 0, left: 0, right: 0, bottom: 0,
