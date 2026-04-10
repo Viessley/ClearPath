@@ -54,9 +54,7 @@ export default function AuthPage() {
   }
 
   function handleGoogleLogin() {
-    // TODO: implement Google OAuth
-    console.log("Google login clicked");
-    navigate("/");
+    window.location.href = "https://clearpath-backend-sc9k.onrender.com/oauth2/authorization/google"
   }
 
   return (

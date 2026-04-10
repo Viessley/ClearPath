@@ -4,6 +4,7 @@ import DecisionTreePage from './Pages/DecisionTreePage'
 import AIChatPage from './Pages/AIChatPage'
 import CheatsheetPage from './Pages/CheatsheetPage'
 import AuthPage from './Pages/AuthPage'
+import AuthCallbackPage from './Pages/AuthCallbackPage'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="/ai-chat" element={<AIChatPage />} />
         <Route path="/cheatsheet" element={<CheatsheetPage />} />
         <Route path="/auth" element={<AuthPage />} />
+        <Route path="/auth/callback" element={<AuthCallbackPage />} />
       </Routes>
     </BrowserRouter>
   )
