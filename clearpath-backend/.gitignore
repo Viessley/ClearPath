@@ -25,4 +25,4 @@ target/
 hs_err_pid*
 replay_pid*
 
-application.properties
+src/main/resources/application.properties
