@@ -347,7 +347,7 @@ export default function CheatsheetPage() {
               <button onClick={() => setShowSaveModal(true)}
                 className="w-full py-3 rounded-xl text-white text-sm font-medium"
                 style={{ backgroundColor: "#0f766e" }}>
-                Save to My Account
+                Save to My Repo
               </button>
               <div className="flex gap-3">
                 <button onClick={() => navigate("/decision-tree")}
