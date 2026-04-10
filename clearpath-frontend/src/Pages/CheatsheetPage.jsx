@@ -101,7 +101,7 @@ export default function CheatsheetPage() {
 
     const data = await res.json();
 
-    if (data.kitId) {
+    if (data.kitID) {
       setShowSaveModal(false);
       alert("Saved! Your Report ID is #CP" + data.kitId);
     }
