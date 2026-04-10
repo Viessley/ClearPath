@@ -15,6 +15,7 @@ export default function TopBar() {
   const [kits, setKits] = useState([])
   const [selected, setSelected] = useState([])
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
 
   async function fetchKits() {
     const userId = localStorage.getItem('userId')
@@ -45,7 +46,45 @@ export default function TopBar() {
     <>
       {/* TopBar */}
       <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-gray-100">
-        <button className="text-gray-500"><HamburgerIcon size={22} /></button>
+        {localStorage.getItem('token') ? (
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              style={{ fontSize: "13px", fontWeight: "600", color: "#0f766e" }}>
+              {localStorage.getItem('nickname') || 'Me'} ▾
+            </button>
+            {showUserMenu && (
+              <div style={{
+                position: "absolute",
+                top: "28px", left: 0,
+                background: "#fff",
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+                padding: "8px",
+                zIndex: 100,
+                minWidth: "120px"
+              }}>
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('token')
+                    localStorage.removeItem('userId')
+                    localStorage.removeItem('nickname')
+                    setShowUserMenu(false)
+                    navigate('/')
+                  }}
+                  style={{ width: "100%", padding: "8px 12px", fontSize: "13px", color: "#ef4444", textAlign: "left" }}>
+                  Sign out
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button
+            onClick={() => navigate('/auth')}
+            style={{ fontSize: "13px", fontWeight: "600", color: "#0f766e" }}>
+            Sign in
+          </button>
+        )}
         <img src={logo} alt="ClearPath" style={{ height: 28, cursor: "pointer" }} onClick={() => navigate("/")} />
         <div className="flex gap-3 text-gray-500">
           <button onClick={() => setShowAnnouncement(true)}>
