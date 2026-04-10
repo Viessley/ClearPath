@@ -89,11 +89,6 @@ export default function CheatsheetPage() {
     const token = localStorage.getItem("token");
     const userId = localStorage.getItem("userId");
 
-    if (!token || !userId) {
-      navigate("/auth");
-      return;
-    }
-
     const res = await fetch("https://clearpath-backend-sc9k.onrender.com/api/kits/save", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
