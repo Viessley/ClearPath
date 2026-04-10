@@ -40,7 +40,7 @@ export default function HomePage() {
         <div className="flex items-center gap-3 mb-4">
           <Mascot />
           <p className="text-sm" style={{ color: "#4B5563" }}>
-            Welcome, <strong style={{ color: "#111827" }}>#UserID</strong>! What brings you here?
+            Welcome, <strong style={{ color: "#111827" }}>{localStorage.getItem('nickname') || 'there'}</strong>! What brings you here?
           </p>
         </div>
 
