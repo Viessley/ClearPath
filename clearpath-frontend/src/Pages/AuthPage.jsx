@@ -60,13 +60,7 @@ export default function AuthPage() {
   return (
 
     <div className="max-w-sm mx-auto min-h-screen flex flex-col items-center justify-center px-6" style={{ background: "#f0f9f8" }}>
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "16px" }}>
-        <button
-          onClick={() => navigate('/')}
-          style={{ fontSize: "13px", color: "#6B7280" }}>
-          Skip
-        </button>
-      </div>
+
       {/* Logo */}
       <img src={logo} alt="ClearPath" style={{ height: 40, marginBottom: 32 }} />
 
@@ -162,7 +156,13 @@ export default function AuthPage() {
         <button className="mt-4 text-xs" style={{ color: "#5B9D93" }}>
           Forgot password?
         </button>
+
       )}
+      <button
+        onClick={() => navigate('/')}
+        style={{ fontSize: "12px", color: "#9CA3AF", marginTop: "8px" }}>
+        Skip for now
+      </button>
     </div>
   );
 }
