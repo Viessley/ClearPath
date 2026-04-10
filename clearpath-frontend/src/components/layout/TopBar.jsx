@@ -81,9 +81,10 @@ export default function TopBar() {
               <h2>ClearPath Updates</h2>
               <p>Welcome! This page will track our roadmap and ideas. A feedback email is coming soon, which we will review daily. Special thanks to Stephen Gagne (Algonquin College) for 8 months of support in turning ClearPath into reality.</p>
               <h3>Update</h3>
-              <p>Update: Report saving is partially live — the Save button is now on the CheatSheet page. Full account saving will be tested soon. Stay tuned.</p>
-              <h3>Vision</h3>
-              <p>Government transparency is valuable but often brings hassle. ClearPath exists to ease those headaches for you, leaving the strict administration to the government.</p>
+              <p>Update: Google Sign-In is now live. No more passwords — just tap "Continue with Google" and you're in.
+                Save your Cheatsheet to your personal account and access it anytime from your Repo.
+                As a thank-you to our early adopters: the first 20 users to register get lifetime free access to all future premium features. No catch.</p>
+
               <p>— Wesley</p>
             </div>
             <button onClick={() => {
