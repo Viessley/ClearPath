@@ -389,7 +389,7 @@ export default function CheatsheetPage() {
               Save your Cheatsheet and access it anytime from your Repo. Takes 30 seconds.
             </p>
             <button
-              onClick={navigate('/auth')}
+              onClick={() => navigate('/auth')}
               style={{
                 width: "100%",
                 padding: "12px",
