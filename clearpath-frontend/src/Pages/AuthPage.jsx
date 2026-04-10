@@ -58,8 +58,15 @@ export default function AuthPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col items-center justify-center px-6" style={{ background: "#f0f9f8" }}>
 
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col items-center justify-center px-6" style={{ background: "#f0f9f8" }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "16px" }}>
+        <button
+          onClick={() => navigate('/')}
+          style={{ fontSize: "13px", color: "#6B7280" }}>
+          Skip
+        </button>
+      </div>
       {/* Logo */}
       <img src={logo} alt="ClearPath" style={{ height: 40, marginBottom: 32 }} />
 
