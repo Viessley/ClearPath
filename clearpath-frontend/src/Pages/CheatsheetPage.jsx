@@ -59,17 +59,7 @@ export default function CheatsheetPage() {
 
   async function generateCheatsheet() {
     try {
-      // TEMP TEST
-      setSections({
-        summary: "You are eligible to get a G1 license in Ontario.",
-        requirements: "Valid passport, Study Permit, proof of address.",
-        steps: "1. Book G1 test\n2. Study handbook\n3. Pass the test",
-        cost: "Approximately $158.25",
-        tips: "Avoid Monday mornings at DriveTest."
-      });
-      setLoading(false);
-      return;
-      // END TEMP
+
 
       const res = await fetch(`${API_BASE}/generate`, {
         method: "POST",
