@@ -18,12 +18,14 @@ public class KitController {
         Long userId = Long.valueOf(request.get("userId").toString());
         String title = (String) request.get(("title"));
         String serviceType = (String) request.get("serviceType");
+        String content = (String) request.get("content");
 
         Kit kit = new Kit();
         kit.setUserId(userId);
         kit.setTitle((title));
         kit.setServiceType(serviceType);
         kit.setStatus("active");
+        kit.setContent(content);
         kit.setCreatedAt(java.time.LocalDateTime.now());
         kit.setUpdatedAt(java.time.LocalDateTime.now());
 

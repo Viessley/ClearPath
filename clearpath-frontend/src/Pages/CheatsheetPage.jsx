@@ -59,7 +59,7 @@ export default function CheatsheetPage() {
 
   async function generateCheatsheet() {
     try {
-   
+
       const res = await fetch(`${API_BASE}/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -95,7 +95,8 @@ export default function CheatsheetPage() {
       body: JSON.stringify({
         userId: parseInt(userId),
         title: "Ontario Driver's License",
-        serviceType: "drivers_license"
+        serviceType: "drivers_license",
+        content: sections ? JSON.stringify(sections) : ""
       }),
     });
 
