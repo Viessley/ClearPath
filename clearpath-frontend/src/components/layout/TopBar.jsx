@@ -187,7 +187,9 @@ export default function TopBar() {
             ) : (
               kits.map(kit => (
                 <div key={kit.id}
+                  onClick={() => { setShowRepo(false); navigate('/kit/' + kit.id); }}
                   style={{
+                    cursor: "pointer",
                     display: "flex", alignItems: "center", gap: "12px",
                     padding: "12px", borderRadius: "12px",
                     border: "1px solid #e5e7eb", marginBottom: "8px",
@@ -208,7 +210,7 @@ export default function TopBar() {
               ))
             )}
 
-            {/* 二次确认删除 */}
+            {/* double check delete */}
             {showDeleteConfirm && (
               <div style={{
                 position: "fixed",
