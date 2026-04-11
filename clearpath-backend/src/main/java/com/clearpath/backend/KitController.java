@@ -41,6 +41,10 @@ public class KitController {
         return kitRepository.findByUserId(userId);
     }
 
+    @GetMapping("/{kitId}")
+    public Kit getKit(@PathVariable("kitId") Long kitId) {
+        return kitRepository.findById(kitId).orElse(null);
+    }
 
     @DeleteMapping("/{kitId}")
     public Map<String, Object> deleteKit(@PathVariable("kitId") Long kitId) {
