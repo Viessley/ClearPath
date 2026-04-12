@@ -26,8 +26,8 @@ public class CheatsheetController {
 
         // Use the 3-agent pipeline via chat method
         String result = aiService.chat(session,
-                "Based on my completed decision tree, generate my personalized cheatsheet for getting an Ontario driver's license. Include: steps to follow, documents to bring, requirements to check, where to go, and costs.");
-
+                "Based on my completed decision tree, generate my personalized cheatsheet for getting an Ontario driver's license. Include: steps to follow, documents to bring, requirements to check, where to go, and costs.",
+                null);
         Map<String, Object> response = new HashMap<>();
         response.put("cheatsheet", result);
         response.put("session", session);
