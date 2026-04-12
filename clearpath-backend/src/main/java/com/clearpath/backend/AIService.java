@@ -20,7 +20,7 @@ public class AIService {
     private static final String GEMINI_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
-    public String chat(Map<String, String> session, String userMessage) {
+    public String chat(Map<String, String> session, String userMessage, String stuckAt) { {
         try {
             String servicePrompt = buildServicePrompt(session, userMessage);
             String serviceResponse = extractText(callGemini(buildGeminiRequest(servicePrompt, false)));
@@ -44,26 +44,40 @@ public class AIService {
         }
     }
 
-    private String buildGeminiRequest(String prompt, boolean withSearch) {
-        if (withSearch) {
-            return """
-                    {
-                        "contents": [
-                            {"parts": [{"text": "%s"}]}
-                        ],
-                        "tools": [{"google_search": {}}]
-                    }
-                    """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
-        } else {
-            return """
-                    {
-                        "contents": [
-                            {"parts": [{"text": "%s"}]}
-                        ]
-                    }
-                    """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
+        private String buildServicePrompt(Map<String, String> session, String userMessage, String stuckAt) {
+            try {
+                ObjectMapper mapper = new ObjectMapper();
+                String sessionJson = mapper.writeValueAsString(session);
+
+                String stuckContext = (stuckAt != null && !stuckAt.isBlank())
+                        ? "The user got stuck at question ID: " + stuckAt + ". They selected 'I'm not sure' and need help understanding their situation before proceeding."
+                        : "The user came from the decision tree and is asking a follow-up question.";
+
+                return """
+                You are ClearPath, a guide helping newcomers navigate Ontario's driver's license process.
+                
+                User's decision tree session so far:
+                %s
+                
+                Context: %s
+                
+                User's message:
+                %s
+                
+                IMPORTANT RULES:
+                - If the user expresses uncertainty, confusion, or asks "can I", "am I able to", 
+                  "do I qualify", "not sure", or similar — DO NOT give steps or documents yet.
+                  Instead, ask 1-2 short clarifying questions to understand their specific situation first.
+                - Only give steps/documents/fees AFTER you understand their situation clearly.
+                - If you are giving steps, use plain text only. No emojis, no arrows, no special symbols.
+                - Maximum 200 words.
+                - No greetings, no encouragement, no filler.
+                """.formatted(sessionJson, stuckContext, userMessage);
+
+            } catch (Exception e) {
+                return userMessage;
+            }
         }
-    }
 
     // Agent 1: Customer Service
     private String buildServicePrompt(Map<String, String> session, String userMessage) {

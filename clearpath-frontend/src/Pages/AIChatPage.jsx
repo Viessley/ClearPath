@@ -92,7 +92,7 @@ export default function AIChatPage() {
       const res = await fetch(`${API_BASE}/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session, userMessage: contextMessage }),
+        body: JSON.stringify({ session, userMessage: contextMessage, stuckAt }),
       });
       const data = await res.json();
 

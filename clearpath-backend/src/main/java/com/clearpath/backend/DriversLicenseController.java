@@ -57,8 +57,9 @@ public class DriversLicenseController {
     public Map<String, Object> aiChat(@RequestBody Map<String, Object> body) {
         Map<String, String> session = (Map<String, String>) body.get("session");
         String userMessage = (String) body.get("userMessage");
+        String stuckAt = (String) body.get("stuckAt");  // 新增
 
-        String aiResponse = aiService.chat(session, userMessage);
+        String aiResponse = aiService.chat(session, userMessage, stuckAt);
 
         Map<String, Object> response = new HashMap<>();
         response.put("type", "AI_RESPONSE");
