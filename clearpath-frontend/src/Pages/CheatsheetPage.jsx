@@ -59,30 +59,6 @@ export default function CheatsheetPage() {
 
   async function generateCheatsheet() {
     try {
-      // TEMP TEST
-      setSections({
-        steps: `1. Go to DriveTest Centre
-   - Visit any DriveTest location in Ontario to start your application.
-2. Pass Vision Test
-   - Complete the mandatory vision screening at the centre.
-3. Pass Knowledge Test
-   - Answer 40 multiple choice questions about Ontario road rules.
-4. Get Your G1
-   - Pay the fee and receive your G1 licence on the spot.`,
-        documents: `| Passport | Original, valid, not expired |
-| Study Permit (IMM 1442) | Original, valid for more than 60 days [Details] |
-| Proof of Address | Utility bill or bank statement showing your Ontario address |`,
-        cost: `- Total: $159.75 (before tax)
-- Includes: G1 knowledge test + G2 road test fee
-- Retake fee: $16 if you fail the knowledge test`,
-        tips: `- Your G1 licence expiry date will match your Study Permit expiry — bring a permit valid for at least 60 days.
-- You cannot book online without an Ontario driver's licence number — walk in instead.
-- Bring two pieces of original ID, not photocopies.`
-      });
-      setLoading(false);
-      return;
-      // END TEMP TEST
-
 
       const res = await fetch(`${API_BASE}/generate`, {
         method: "POST",
