@@ -1,5 +1,6 @@
-package com.clearpath.backend;
+package com.clearpath.backend.repository;
 
+import com.clearpath.backend.entity.Kit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 

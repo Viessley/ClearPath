@@ -1,4 +1,4 @@
-package com.clearpath.backend;
+package com.clearpath.backend.config;
 
 import org.springframework.stereotype.Component;
 import java.util.*;

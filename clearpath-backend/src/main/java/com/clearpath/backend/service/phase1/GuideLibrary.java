@@ -1,4 +1,4 @@
-package com.clearpath.backend;
+package com.clearpath.backend.service.phase1;
 
 import org.springframework.stereotype.Component;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.clearpath.backend;
+package com.clearpath.backend.dto.phase1;
 
 import java.util.Map;
 

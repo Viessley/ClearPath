@@ -1,4 +1,4 @@
-package com.clearpath.backend;
+package com.clearpath.backend.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

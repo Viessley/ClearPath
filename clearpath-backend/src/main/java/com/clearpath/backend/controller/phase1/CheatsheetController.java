@@ -1,5 +1,8 @@
-package com.clearpath.backend;
+package com.clearpath.backend.controller.phase1;
 
+import com.clearpath.backend.service.phase1.AIService;
+import com.clearpath.backend.dto.phase1.CheatsheetRequest;
+import com.clearpath.backend.dto.phase1.CheatsheetUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

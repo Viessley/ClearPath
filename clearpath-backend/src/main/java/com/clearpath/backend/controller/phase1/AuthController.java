@@ -1,13 +1,15 @@
-package com.clearpath.backend;
+package com.clearpath.backend.controller.phase1;
 
 import java.util.Map;
 import java.util.HashMap;
+
+import com.clearpath.backend.entity.User;
+import com.clearpath.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.util.Date;
 

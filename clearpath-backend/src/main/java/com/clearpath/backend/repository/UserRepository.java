@@ -1,5 +1,6 @@
-package com.clearpath.backend;
+package com.clearpath.backend.repository;
 
+import com.clearpath.backend.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {

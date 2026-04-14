@@ -1,5 +1,6 @@
-package com.clearpath.backend;
+package com.clearpath.backend.service.phase1;
 
+import com.clearpath.backend.dto.phase1.CheatsheetResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

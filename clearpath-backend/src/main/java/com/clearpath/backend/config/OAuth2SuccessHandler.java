@@ -1,5 +1,7 @@
-package com.clearpath.backend;
+package com.clearpath.backend.config;
 
+import com.clearpath.backend.entity.User;
+import com.clearpath.backend.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;

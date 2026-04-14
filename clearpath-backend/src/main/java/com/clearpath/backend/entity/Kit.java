@@ -1,4 +1,4 @@
-package com.clearpath.backend;
+package com.clearpath.backend.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
