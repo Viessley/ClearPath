@@ -47,6 +47,7 @@ public class DecisionTreeService {
     }
 
     public Map<String, Object>handleAnswer(String questionId, String value){
+
         DtTransition transition = transitionRepository.findByQuestionIdAndAnswerValue(questionId, value);
 
         if(transition == null){
@@ -59,6 +60,13 @@ public class DecisionTreeService {
         response.put("nextQuestionId",transition.getNextQuestionId());
         response.put("done","ANSWER".equals(transition.getResponseType()));
 
+        String nextId = transition.getNextQuestionId();
+        if (nextId != null) {
+            Map<String, Object> nextQ = getQuestion(nextId);
+            response.put("question", nextQ.get("question"));
+            response.put("questionId", nextId);
+            response.put("options", nextQ.get("options"));
+        }
         return response;
     }
 
