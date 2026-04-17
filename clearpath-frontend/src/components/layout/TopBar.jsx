@@ -1,4 +1,4 @@
-import { HamburgerIcon, AnnouncementIcon, RepoIcon } from "../../icons/System"
+import { HamburgerIcon, AnnouncementIcon, RepoIcon, SunIcon, MoonIcon } from "../../icons/System"
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/clearpath-logo.png'
@@ -16,6 +16,9 @@ export default function TopBar() {
   const [selected, setSelected] = useState([])
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true';
+  });
 
   async function fetchKits() {
     const userId = localStorage.getItem('userId')
@@ -86,12 +89,20 @@ export default function TopBar() {
           </button>
         )}
         <img src={logo} alt="ClearPath" style={{ height: 28, cursor: "pointer" }} onClick={() => navigate("/")} />
-        <div className="flex gap-3 text-gray-500">
+        <div className="flex gap-3 items-center text-gray-500">
           <button onClick={() => setShowAnnouncement(true)}>
             <AnnouncementIcon showDot={hasNew} />
           </button>
-          <button onClick={() => { setShowRepo(true); fetchKits(); }}>
-            <RepoIcon />
+          <button
+            onClick={() => {
+              const next = !darkMode;
+              setDarkMode(next);
+              localStorage.setItem('darkMode', next ? 'true' : 'false');
+              document.documentElement.classList.toggle('dark', next);
+            }}
+            className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+          >
+            {darkMode ? <SunIcon /> : <MoonIcon />}
           </button>
         </div>
       </div>
