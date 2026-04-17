@@ -111,3 +111,41 @@ CREATE TABLE chat_messages (
                                content TEXT,
                                created_at TIMESTAMP DEFAULT NOW()
 );
+
+
+-- Knowledge Base (RAG)
+CREATE TABLE knowledge_base (
+                                id            BIGSERIAL PRIMARY KEY,
+                                category      VARCHAR(50),
+                                topic         VARCHAR(100),
+                                subtopic      VARCHAR(100),
+                                content       TEXT,
+                                summary       TEXT,
+                                official_rule TEXT,
+                                source_url    VARCHAR(255),
+                                source_quote  TEXT,
+                                steps         TEXT,
+                                documents     TEXT,
+                                tips          TEXT,
+                                fees          TEXT,
+                                tags          VARCHAR(255),
+                                updated_at    TIMESTAMP DEFAULT NOW()
+);
+
+-- Not Sure Sub-options
+CREATE TABLE dt_not_sure_options (
+                                     id                BIGSERIAL PRIMARY KEY,
+                                     question_id       VARCHAR(50),
+                                     option_key        VARCHAR(10),
+                                     label             TEXT,
+                                     knowledge_base_id BIGINT REFERENCES knowledge_base(id),
+                                     outcome_type      VARCHAR(20),
+                                     display_order     INT,
+                                     created_at        TIMESTAMP DEFAULT NOW()
+);
+
+
+-- ALTER
+ALTER TABLE dt_questions ADD COLUMN service_type VARCHAR(50) DEFAULT 'drivers_license';
+ALTER TABLE dt_options ADD COLUMN is_not_sure BOOLEAN DEFAULT FALSE;
+ALTER TABLE dt_options ADD COLUMN knowledge_base_id BIGINT REFERENCES knowledge_base(id);
