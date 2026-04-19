@@ -1,6 +1,6 @@
 package com.clearpath.backend.controller.phase1;
 
-import com.clearpath.backend.service.phase1.AIService;
+import com.clearpath.backend.service.phase1.KnowledgeService;
 import com.clearpath.backend.dto.phase1.CheatsheetRequest;
 import com.clearpath.backend.dto.phase1.CheatsheetUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class CheatsheetController {
 
     @Autowired
-    private AIService aiService;
+    private KnowledgeService knowledgeService;
 
     @PostMapping("/generate")
     public Map<String, Object> generate(@RequestBody CheatsheetRequest request) {
@@ -27,14 +27,7 @@ public class CheatsheetController {
             return error;
         }
 
-        // Use the 3-agent pipeline via chat method
-        String result = aiService.chat(session,
-                "Based on my completed decision tree, generate my personalized cheatsheet for getting an Ontario driver's license. Include: steps to follow, documents to bring, requirements to check, where to go, and costs.",
-                null);
-        Map<String, Object> response = new HashMap<>();
-        response.put("cheatsheet", result);
-        response.put("session", session);
-        return response;
+        return knowledgeService.buildCheatsheet(session);
     }
 
     @PostMapping("/update")
