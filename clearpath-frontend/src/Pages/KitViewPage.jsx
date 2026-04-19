@@ -36,7 +36,7 @@ export default function KitViewPage() {
             {sections.requirements && <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)" }}><h3 className="text-sm font-bold mb-2" style={{ color: "var(--accent)" }}>Requirements</h3><p className="text-sm">{sections.requirements}</p></div>}
             {sections.steps && <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)" }}><h3 className="text-sm font-bold mb-2" style={{ color: "var(--accent)" }}>Your Steps</h3><p className="text-sm">{sections.steps}</p></div>}
             {sections.cost && <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)" }}><h3 className="text-sm font-bold mb-2" style={{ color: "var(--accent)" }}>Cost</h3><p className="text-sm">{sections.cost}</p></div>}
-            {sections.tips && <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--tip-border)", backgroundColor: "#FFFBEB" }}><h3 className="text-sm font-bold mb-2" style={{ color: "var(--tip-text)" }}>Tips</h3><p className="text-sm">{sections.tips}</p></div>}
+            {sections.tips && <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--tip-border)", backgroundColor: "#var(--bg-tip)" }}><h3 className="text-sm font-bold mb-2" style={{ color: "var(--tip-text)" }}>Tips</h3><p className="text-sm">{sections.tips}</p></div>}
           </div>
         ) : (
           <p className="text-sm text-gray-500">No content available.</p>

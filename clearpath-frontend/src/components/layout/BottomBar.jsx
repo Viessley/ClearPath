@@ -101,7 +101,7 @@ export default function BottomBar() {
                     display: "flex", alignItems: "center", gap: "12px",
                     padding: "12px", borderRadius: "12px",
                     border: "1px solid #e5e7eb", marginBottom: "8px",
-                    backgroundColor: selected.includes(kit.id) ? "#f0f9f8" : "#fff"
+                    backgroundColor: selected.includes(kit.id) ? "var(--bg-page)" : "var(--bg-card)"
                   }}>
                   <input
                     type="checkbox"
@@ -110,7 +110,7 @@ export default function BottomBar() {
                   />
                   <div>
                     <p style={{ fontSize: "14px", fontWeight: "600" }}>{kit.title}</p>
-                    <p style={{ fontSize: "12px", color: "#6B7280" }}>
+                    <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>
                       #CP{kit.id} · {kit.createdAt?.slice(0, 10)}
                     </p>
                   </div>
@@ -131,7 +131,7 @@ export default function BottomBar() {
                   <p style={{ fontSize: "15px", fontWeight: "600", marginBottom: "8px" }}>
                     Delete {selected.length} report{selected.length > 1 ? "s" : ""}?
                   </p>
-                  <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
+                  <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "20px" }}>
                     This cannot be undone.
                   </p>
                   <button onClick={deleteSelected}
@@ -139,7 +139,7 @@ export default function BottomBar() {
                     Yes, delete
                   </button>
                   <button onClick={() => setShowDeleteConfirm(false)}
-                    style={{ width: "100%", padding: "12px", color: "#6B7280", fontSize: "13px" }}>
+                    style={{ width: "100%", padding: "12px", color: "var(--text-muted)", fontSize: "13px" }}>
                     Cancel
                   </button>
                 </div>

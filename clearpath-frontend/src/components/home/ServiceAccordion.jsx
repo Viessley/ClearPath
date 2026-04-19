@@ -16,14 +16,14 @@ export default function ServiceAccordion({ category, bgColor, items, selected, o
       <button className="w-full flex items-center justify-between px-4 py-4"
         onClick={() => setIsOpen(!isOpen)}>
         <div>
-          <div className="font-semibold" style={{ color: "#111827", fontSize: 16, letterSpacing: "-0.02em" }}>{category}</div>
+          <div className="font-semibold" style={{ color: "var(--text-primary)", fontSize: 16, letterSpacing: "-0.02em" }}>{category}</div>
 
-          <div className="mt-0.5" style={{ color: "#111827", fontSize: 14 }}>
+          <div className="mt-0.5" style={{ color: "var(--text-primary)", fontSize: 14 }}>
             Select what you need ({selectedCount}/{items.length})
           </div>
 
         </div>
-        <span style={{ color: "#5B9D93" }}>{isOpen ? '▲' : '▼'}</span>
+        <span style={{ color: "var(--accent)" }}>{isOpen ? '▲' : '▼'}</span>
       </button>
 
       {/* Items */}
@@ -47,7 +47,7 @@ export default function ServiceAccordion({ category, bgColor, items, selected, o
               onClick={() => navigate('/decision-tree')}
               className="text-sm font-semibold px-5 py-2"
               style={{
-                background: selectedCount > 0 ? "#5B9D93" : "#9CA3AF",
+                background: selectedCount > 0 ? "var(--accent)" : "var(--text-muted)",
                 color: "#F5EFF7",
                 borderRadius: 12,
                 boxShadow: "0px 4px 4px rgba(0,0,0,0.25)",

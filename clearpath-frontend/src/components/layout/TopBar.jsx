@@ -15,7 +15,12 @@ export default function TopBar() {
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
-  
+  useEffect(() => {
+    const saved = localStorage.getItem('darkMode') === 'true'
+    setDarkMode(saved)
+    document.documentElement.classList.toggle('dark', saved)
+  }, [])
+
 
   return (
     <>
@@ -24,15 +29,15 @@ export default function TopBar() {
         {localStorage.getItem('token') ? (
           <div style={{ position: "relative" }}>
             <button
-              onClick={() => setShowUserMenu(!showUserMenu)}  
-              style={{ fontSize: "13px", fontWeight: "600", color: "#0f766e" }}>
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              style={{ fontSize: "13px", fontWeight: "600", color: "var(--accent-dark)" }}>
               {localStorage.getItem('nickname') || 'Me'} ▾
             </button>
             {showUserMenu && (
               <div style={{
                 position: "absolute",
                 top: "28px", left: 0,
-                background: "#fff",
+                background: "var(--bg-card)",
                 borderRadius: "12px",
                 boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
                 padding: "8px",
@@ -56,7 +61,7 @@ export default function TopBar() {
         ) : (
           <button
             onClick={() => navigate('/auth')}
-            style={{ fontSize: "13px", fontWeight: "600", color: "#0f766e" }}>
+            style={{ fontSize: "13px", fontWeight: "600", color: "var(--accent-dark)" }}>
             Sign in
           </button>
         )}
@@ -92,7 +97,7 @@ export default function TopBar() {
           padding: "24px"
         }}>
           <div style={{
-            background: "#fff",
+            background: "var(--bg-card)",
             borderRadius: "16px",
             padding: "24px",
             width: "100%",
@@ -118,8 +123,8 @@ export default function TopBar() {
                 marginTop: "16px",
                 width: "100%",
                 padding: "12px",
-                background: "#0f766e",
-                color: "#fff",
+                background: "var(--accent-dark)",
+                color: "var(--bg-card)",
                 borderRadius: "12px",
                 fontWeight: "600",
                 fontSize: "14px"
