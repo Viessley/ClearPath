@@ -97,20 +97,19 @@ export default function AnnouncementPage() {
             style={{
               background: copied ? "#ccfbf1" : "var(--bg-card)",
               border: "1px solid",
-              borderColor: copied ? "#2dd4bf" : "#e5e7eb",
-              color: copied ? "#0f766e" : "#111827",
+              borderColor: copied ? "#2dd4bf" : "#var(--border-light)",
+              color: copied ? "#var(--accent-dark)" : "#var(--text-primary)",
             }}
           >
             <span>{ANNOUNCEMENT.contact.email}</span>
-            <span className="text-xs ml-3" style={{ color: copied ? "#0f766e" : "#9CA3AF" }}>
+            <span className="text-xs ml-3" style={{ color: copied ? "#var(--accent-dark)" : "var(--text-muted)" }}>
               {copied ? "✓ Copied!" : "Copy"}
             </span>
           </button>
-          <p className="text-xs" style={{ color: "#9CA3AF" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
             Tap to copy email address
           </p>
         </div>
-
       </div>
     </div>
   )
