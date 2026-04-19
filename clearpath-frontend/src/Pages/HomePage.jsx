@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import TopBar from '../components/layout/TopBar'
+import BottomBar from '../components/layout/BottomBar'
 import Mascot from '../components/shared/Mascot'
 import ServiceAccordion from '../components/home/ServiceAccordion'
 import { GetLicensedIcon, SwitchLicensesIcon, FixTicketsIcon, StudyPermitIcon, WorkPermitIcon } from '../icons/Service'
@@ -9,7 +10,7 @@ const HAS_NEW_ANNOUNCEMENT = true
 const SERVICES = [
   {
     category: "Ontario Driver Services",
-    bgColor: "#D1EDE9",
+    bgColor: "var(--bg-accent)",
     items: [
       { id: "get-licensed", icon: <GetLicensedIcon />, title: "Get licensed", subtitle: "Get G1, G2, or full G license" },
       { id: "switch-license", icon: <SwitchLicensesIcon />, title: "Switch licenses", subtitle: "Exchange foreign license" },
@@ -18,7 +19,7 @@ const SERVICES = [
   },
   {
     category: "Visa Services",
-    bgColor: "#E3F2FD",
+    bgColor: "var(--bg-accent-blue)",
     items: [
       { id: "study-permit", icon: <StudyPermitIcon />, title: "Study Permit", subtitle: "Apply or extend your study permit" },
       { id: "work-permit", icon: <WorkPermitIcon />, title: "Work Permit", subtitle: "Open or employer-specific permits" },
@@ -32,15 +33,15 @@ export default function HomePage() {
   const toggleItem = (id) => setSelected(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <div className="flex-1 px-4 pt-4 pb-32">
         {/* Greeting */}
         <div className="flex items-center gap-3 mb-4">
           <Mascot />
-          <p className="text-sm" style={{ color: "#4B5563" }}>
-            Welcome, <strong style={{ color: "#111827" }}>{localStorage.getItem('nickname')}</strong>! What brings you here?
+          <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+            Welcome, <strong style={{ color: "var(--text-primary)" }}>{localStorage.getItem('nickname')}</strong>! What brings you here?
           </p>
         </div>
 
@@ -56,6 +57,7 @@ export default function HomePage() {
           />
         ))}
       </div>
+      <BottomBar />
 
 
     </div>

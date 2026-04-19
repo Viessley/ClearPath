@@ -35,18 +35,18 @@ export default function AnnouncementPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
 
       {/* Top bar */}
       <div className="flex items-center gap-3 px-4 py-4 border-b border-teal-100">
         <button
           onClick={() => navigate(-1)}
           className="text-sm font-medium"
-          style={{ color: "#0f766e" }}
+          style={{ color: "var(--accent-dark)" }}
         >
           ← Back
         </button>
-        <span className="text-sm font-semibold" style={{ color: "#111827" }}>
+        <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
           Updates
         </span>
       </div>
@@ -58,17 +58,17 @@ export default function AnnouncementPage() {
         <div className="flex items-center gap-2">
           <span
             className="text-xs font-bold px-2 py-0.5 rounded-full"
-            style={{ background: "#ccfbf1", color: "#0f766e" }}
+            style={{ background: "#ccfbf1", color: "var(--accent-dark)" }}
           >
             {ANNOUNCEMENT.badge}
           </span>
-          <span className="text-xs" style={{ color: "#6B7280" }}>
+          <span className="text-xs" style={{ color: "#var(--text-muted)" }}>
             Last updated: {ANNOUNCEMENT.lastUpdated}
           </span>
         </div>
 
         {/* Title */}
-        <h1 className="text-xl font-bold leading-snug" style={{ color: "#111827" }}>
+        <h1 className="text-xl font-bold leading-snug" style={{ color: "var(--text-primary)" }}>
           {ANNOUNCEMENT.title}
         </h1>
 
@@ -88,14 +88,14 @@ export default function AnnouncementPage() {
 
         {/* Contact */}
         <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "#6B7280" }}>
+          <p className="text-xs font-semibold uppercase tracking-wide" style={{ color: "var(--text-muted)" }}>
             {ANNOUNCEMENT.contact.label}
           </p>
           <button
             onClick={handleCopy}
             className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium transition-all"
             style={{
-              background: copied ? "#ccfbf1" : "#ffffff",
+              background: copied ? "#ccfbf1" : "var(--bg-card)",
               border: "1px solid",
               borderColor: copied ? "#2dd4bf" : "#e5e7eb",
               color: copied ? "#0f766e" : "#111827",

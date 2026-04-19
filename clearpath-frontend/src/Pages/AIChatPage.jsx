@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
+import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
@@ -128,7 +129,7 @@ export default function AIChatPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-accent-light)" }}>
       <TopBar />
 
       {/* Chat messages */}
@@ -139,8 +140,8 @@ export default function AIChatPage() {
             <div
               className="rounded-xl px-4 py-2.5 text-sm leading-relaxed max-w-[80%]"
               style={{
-                backgroundColor: msg.role === "ai" ? "#D1EDE9" : "#5B9D93",
-                color: msg.role === "ai" ? "#111827" : "#FFFFFF",
+                backgroundColor: msg.role === "ai" ? "var(--bg-accent)" : "var(--accent)",
+                color: msg.role === "ai" ? "var(--text-primary)" : "var(--bg-card)",
               }}
             >
               {renderMessageText(msg.text)}
@@ -151,7 +152,7 @@ export default function AIChatPage() {
         {loading && (
           <div className="flex items-start gap-2.5 mb-4">
             <Mascot emotion="thinking" size={32} />
-            <div className="rounded-xl px-4 py-2.5 text-sm" style={{ backgroundColor: "#D1EDE9", color: "#5B9D93" }}>
+            <div className="rounded-xl px-4 py-2.5 text-sm" style={{ backgroundColor: "var(--bg-accent)", color: "var(--accent)" }}>
               Thinking...
             </div>
           </div>
@@ -165,7 +166,7 @@ export default function AIChatPage() {
         <div className="max-w-sm mx-auto flex items-center gap-2">
           <button onClick={() => navigate(-1)}
             className="px-3 py-2 rounded-xl text-xs font-medium border"
-            style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>
+            style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>
             Back
           </button>
           <input
@@ -175,18 +176,19 @@ export default function AIChatPage() {
             onKeyDown={handleKeyDown}
             placeholder="Type your question..."
             className="flex-1 px-4 py-2.5 rounded-xl border text-sm"
-            style={{ borderColor: "#A8D5CF" }}
+            style={{ borderColor: "var(--border-color)" }}
             disabled={loading}
           />
           <button
             onClick={sendMessage}
             disabled={loading || !input.trim()}
             className="px-4 py-2.5 rounded-xl text-sm font-medium text-white transition-all"
-            style={{ backgroundColor: loading || !input.trim() ? "#9CA3AF" : "#5B9D93" }}>
+            style={{ backgroundColor: loading || !input.trim() ? "var(--text-muted)" : "var(--accent)" }}>
             Send
           </button>
         </div>
       </div>
+      <BottomBar />
     </div>
   );
 }

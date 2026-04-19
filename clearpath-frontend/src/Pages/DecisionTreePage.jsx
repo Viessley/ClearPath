@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
+import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
@@ -130,7 +131,7 @@ export default function DecisionTreePage() {
   const stepCount = history.length + 1;
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <main className="flex-1 px-4 py-5 flex flex-col">
@@ -142,7 +143,7 @@ export default function DecisionTreePage() {
           </div>
           <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
             <div className="h-full rounded-full transition-all duration-500 ease-out"
-              style={{ width: done ? "100%" : `${Math.min(stepCount * 15, 90)}%`, backgroundColor: "#5B9D93" }} />
+              style={{ width: done ? "100%" : `${Math.min(stepCount * 15, 90)}%`, backgroundColor: "var(--accent)" }} />
           </div>
         </div>
 
@@ -150,7 +151,7 @@ export default function DecisionTreePage() {
         <div className="flex items-start gap-3 mb-5">
           <Mascot emotion={done ? "happy" : aiSupport ? "thinking" : "neutral"} size={40} />
           <div className="rounded-xl px-4 py-2.5 text-sm leading-relaxed"
-            style={{ backgroundColor: "#D1EDE9", color: "#111827" }}>
+            style={{ backgroundColor: "var(--bg-accent)", color: "var(--text-primary)" }}>
             <p>{feedback || "Let's figure out the best path for you."}</p>
           </div>
         </div>
@@ -168,7 +169,7 @@ export default function DecisionTreePage() {
           <div className="flex-1 flex items-center justify-center">
             <div className="flex flex-col items-center gap-3">
               <div className="w-8 h-8 border-3 border-t-transparent rounded-full animate-spin"
-                style={{ borderColor: "#5B9D93", borderTopColor: "transparent" }} />
+                style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }} />
               <p className="text-sm text-gray-500">Loading...</p>
             </div>
           </div>
@@ -179,8 +180,8 @@ export default function DecisionTreePage() {
           <div ref={cardRef}
             className={`transition-all duration-300 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
             <div className="rounded-xl border-2 px-4 py-3 mb-4"
-              style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-              <p className="text-sm font-semibold" style={{ color: "#111827" }}>Q{stepCount}: {question}</p>
+              style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
+              <p className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>Q{stepCount}: {question}</p>
             </div>
 
             {/* Options */}
@@ -202,10 +203,10 @@ export default function DecisionTreePage() {
                           return (
                             <button key={opt.value} onClick={() => { handleSelect(opt.value); setShowMore(false); }}
                               className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all duration-150 ${isSelected ? "shadow-sm" : "hover:border-gray-300"}`}
-                              style={{ borderColor: isSelected ? "#5B9D93" : "#E5E7EB", backgroundColor: isSelected ? "#F0FAF8" : "#FFFFFF", color: "#111827" }}>
+                              style={{ borderColor: isSelected ? "var(--accent)" : "var(--border-light)", backgroundColor: isSelected ? "var(--bg-accent)" : "var(--bg-card)", color: "var(--text-primary)" }}>
                               <div className="flex items-center justify-between">
                                 <span>{opt.label}</span>
-                                {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B9D93" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
+                                {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
                               </div>
                             </button>
                           );
@@ -215,7 +216,7 @@ export default function DecisionTreePage() {
 
                     <button onClick={() => setShowMore(!showMore)}
                       className="w-full mt-3 py-2.5 text-sm font-medium rounded-xl border-2 transition-all"
-                      style={{ borderColor: "#A8D5CF", color: "#5B9D93" }}>
+                      style={{ borderColor: "var(--border-color)", color: "var(--accent)" }}>
                       {showMore ? "Hide other countries" : "My country is not listed"}
                     </button>
 
@@ -224,14 +225,14 @@ export default function DecisionTreePage() {
                         <input type="text" placeholder="Search country..." value={countrySearch}
                           onChange={(e) => setCountrySearch(e.target.value)}
                           className="w-full px-4 py-2.5 rounded-xl border-2 text-sm mb-2"
-                          style={{ borderColor: "#A8D5CF" }} />
+                          style={{ borderColor: "var(--border-color)" }} />
                         <div className="max-h-36 overflow-y-auto space-y-1.5">
                           {filtered.map((opt) => {
                             const isSelected = selectedValue === opt.value;
                             return (
                               <button key={opt.value} onClick={() => handleSelect(opt.value)}
                                 className={`w-full text-left px-3 py-2 rounded-lg border text-sm transition-all ${isSelected ? "shadow-sm" : "hover:border-gray-300"}`}
-                                style={{ borderColor: isSelected ? "#5B9D93" : "#E5E7EB", backgroundColor: isSelected ? "#F0FAF8" : "#FFFFFF", color: "#111827" }}>
+                                style={{ borderColor: isSelected ? "var(--accent)" : "var(--border-light)", backgroundColor: isSelected ? "var(--bg-accent-light)" : "var(--bg-card)", color: "var(--text-primary)" }}>
                                 {opt.label}
                               </button>
                             );
@@ -249,10 +250,10 @@ export default function DecisionTreePage() {
                       return (
                         <button key={opt.value} onClick={() => handleSelect(opt.value)}
                           className={`w-full text-left px-4 py-3 rounded-xl border-2 text-sm transition-all duration-150 ${isSelected ? "shadow-sm" : "hover:border-gray-300"}`}
-                          style={{ borderColor: isSelected ? "#5B9D93" : "#E5E7EB", backgroundColor: isSelected ? "#F0FAF8" : "#FFFFFF", color: "#111827" }}>
+                          style={{ borderColor: isSelected ? "var(--accent)" : "var(--border-light)", backgroundColor: isSelected ? "var(--bg-accent-light)" : "var(--bg-card)", color: "var(--text-primary)" }}>
                           <div className="flex items-center justify-between">
                             <span>{opt.label}</span>
-                            {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5B9D93" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
+                            {isSelected && <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>}
                           </div>
                         </button>
                       );
@@ -267,12 +268,12 @@ export default function DecisionTreePage() {
         {/* Done */}
         {!loading && done && (
           <div className={`transition-all duration-300 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
-            <div className="rounded-xl border-2 px-5 py-5 text-center" style={{ borderColor: "#A8D5CF", backgroundColor: "#F0FAF8" }}>
+            <div className="rounded-xl border-2 px-5 py-5 text-center" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-accent)"    }}>
               <div className="text-3xl mb-3">✅</div>
-              <h2 className="text-base font-semibold mb-2" style={{ color: "#111827" }}>Assessment Complete</h2>
+              <h2 className="text-base font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Assessment Complete</h2>
               {feedback && <p className="text-sm text-gray-600 mb-4 leading-relaxed">{feedback}</p>}
               <button onClick={goToCheatsheet} className="w-full py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:opacity-90 active:scale-[0.98]"
-                style={{ backgroundColor: "#5B9D93" }}>
+                style={{ backgroundColor: "var(--accent)" }}>
                 Generate My Cheatsheet →
               </button>
             </div>
@@ -283,7 +284,7 @@ export default function DecisionTreePage() {
         {!loading && aiSupport && !done && (
           <div className="mt-4">
             <button onClick={goToAIChat} className="w-full py-2.5 rounded-xl text-white text-sm font-medium transition-all hover:opacity-90 active:scale-[0.98] flex items-center justify-center gap-2"
-              style={{ backgroundColor: "#5B9D93" }}>
+              style={{ backgroundColor: "var(--accent)" }}>
               💬 Chat with ClearPath AI
             </button>
           </div>
@@ -294,12 +295,12 @@ export default function DecisionTreePage() {
           <div className="flex items-center justify-between mt-6 pb-2">
             <button onClick={handlePrev} disabled={history.length === 0}
               className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${history.length === 0 ? "text-gray-300 cursor-not-allowed" : "text-white hover:opacity-90 active:scale-[0.98]"}`}
-              style={{ backgroundColor: history.length === 0 ? "#E5E7EB" : "#5B9D93" }}>
+              style={{ backgroundColor: history.length === 0 ? "var(--border-light)" : "var(--accent)" }}>
               ← Prev
             </button>
             <button onClick={handleNext} disabled={!selectedValue}
               className={`px-5 py-2.5 rounded-xl text-sm font-medium transition-all ${!selectedValue ? "text-gray-300 cursor-not-allowed" : "text-white hover:opacity-90 active:scale-[0.98]"}`}
-              style={{ backgroundColor: !selectedValue ? "#E5E7EB" : "#5B9D93" }}>
+              style={{ backgroundColor: !selectedValue ? "var(--border-light)" : "var(--accent)" }}>
               Next →
             </button>
           </div>
@@ -308,14 +309,13 @@ export default function DecisionTreePage() {
         {done && (
           <div className="flex items-center justify-between mt-4 pb-2">
             <button onClick={handlePrev} className="px-5 py-2.5 rounded-xl text-sm font-medium text-white transition-all hover:opacity-90 active:scale-[0.98]"
-              style={{ backgroundColor: "#5B9D93" }}>← Back</button>
+              style={{ backgroundColor: "var(--accent)" }}>← Back</button>
             <button onClick={() => navigate("/")} className="px-5 py-2.5 rounded-xl text-sm font-medium border-2 transition-all hover:bg-gray-50"
-              style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>Home</button>
+              style={{ borderColor: "var(--accent)", color: "var(--accent)" }}>Home</button>
           </div>
         )}
       </main>
-
-     
+      <BottomBar />
     </div>
   );
 }

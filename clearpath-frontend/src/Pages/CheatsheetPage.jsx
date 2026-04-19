@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
+import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
@@ -22,12 +23,12 @@ function LoadingStages() {
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-4">
       <div className="w-8 h-8 border-3 border-t-transparent rounded-full animate-spin"
-        style={{ borderColor: "#5B9D93", borderTopColor: "transparent" }} />
-      <p className="text-sm font-medium" style={{ color: "#5B9D93" }}>{stages[stage]}</p>
+        style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }} />
+      <p className="text-sm font-medium" style={{ color: "var(--accent)" }}>{stages[stage]}</p>
       <div className="flex gap-1.5">
         {stages.map((_, i) => (
           <div key={i} className="w-2 h-2 rounded-full transition-all duration-300"
-            style={{ backgroundColor: i <= stage ? "#5B9D93" : "#D1EDE9" }} />
+            style={{ backgroundColor: i <= stage ? "var(--accent" : "var(--bg-accent)" }} />
         ))}
       </div>
     </div>
@@ -162,9 +163,9 @@ export default function CheatsheetPage() {
 
             return (
               <div key={i}>
-                <div className="flex justify-between py-2 border-b" style={{ borderColor: "#E5E7EB" }}>
-                  <span className="text-sm font-medium" style={{ color: "#111827" }}>{docName}</span>
-                  <span className="text-xs text-right" style={{ color: "#4B5563", maxWidth: "55%" }}>{requirement}</span>
+                <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--border-light)" }}>
+                  <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{docName}</span>
+                  <span className="text-xs text-right" style={{ color: "var(--text-secondary)", maxWidth: "55%" }}>{requirement}</span>
                 </div>
                 {hasDetails && (
                   <button
@@ -175,12 +176,12 @@ export default function CheatsheetPage() {
                       }
                     }}
                     className="text-xs font-medium mt-1 mb-2"
-                    style={{ color: "#5B9D93" }}>
+                    style={{ color: "var(--accent)" }}>
                     {isOpen ? "Hide details" : "Show details"}
                   </button>
                 )}
                 {isOpen && (
-                  <div className="text-xs rounded-lg px-3 py-2 mb-2" style={{ backgroundColor: "#F0FAF8", color: "#4B5563" }}>
+                  <div className="text-xs rounded-lg px-3 py-2 mb-2" style={{ backgroundColor: "var(--bg-accent-light)", color: "var(--text-secondary)" }}>
                     {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
                   </div>
                 )}
@@ -194,10 +195,10 @@ export default function CheatsheetPage() {
           return (
             <div key={i} className="flex items-start gap-3 py-2">
               <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white"
-                style={{ backgroundColor: "#5B9D93" }}>
+                style={{ backgroundColor: "var(--accent)" }}>
                 {line.match(/^(\d+)/)[1]}
               </div>
-              <p className="text-sm" style={{ color: "#111827" }}>{line.replace(/^\d+\.\s*/, "")}</p>
+              <p className="text-sm" style={{ color: "var(--text-primary)" }}>{line.replace(/^\d+\.\s*/, "")}</p>
             </div>
           );
         }
@@ -210,7 +211,7 @@ export default function CheatsheetPage() {
 
           return (
             <div key={i}>
-              <p className="text-sm pl-9 py-0.5" style={{ color: "#4B5563" }}>
+              <p className="text-sm pl-9 py-0.5" style={{ color: "var(--text-secondary)" }}>
                 - {cleanLine}
               </p>
               {hasDetails && (
@@ -222,12 +223,12 @@ export default function CheatsheetPage() {
                     }
                   }}
                   className="text-xs font-medium ml-9 mt-1 mb-2"
-                  style={{ color: "#5B9D93" }}>
+                  style={{ color: "var(--accent)" }}>
                   {isOpen ? "Hide details" : "Show details"}
                 </button>
               )}
               {isOpen && (
-                <div className="text-xs rounded-lg px-3 py-2 ml-9 mb-2" style={{ backgroundColor: "#F0FAF8", color: "#4B5563" }}>
+                <div className="text-xs rounded-lg px-3 py-2 ml-9 mb-2" style={{ backgroundColor: "var(--bg-accent-light）", color: "var(--text-secondary)" }}>
                   {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
                 </div>
               )}
@@ -235,12 +236,12 @@ export default function CheatsheetPage() {
           );
         }
         // Regular text
-        return <p key={i} className="text-sm py-0.5" style={{ color: "#111827" }}>{line}</p>;
+        return <p key={i} className="text-sm py-0.5" style={{ color: "var(--text-primary)" }}>{line}</p>;
       });
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "#f0f9f8" }}>
+    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <main className="flex-1 px-4 py-5 flex flex-col pb-32">
@@ -248,7 +249,7 @@ export default function CheatsheetPage() {
         <div className="flex items-start gap-3 mb-5">
           <Mascot emotion="happy" size={40} />
           <div className="rounded-xl px-4 py-2.5 text-sm leading-relaxed"
-            style={{ backgroundColor: "#D1EDE9", color: "#111827" }}>
+            style={{ backgroundColor: "var(--bg-accent)", color: "var(--text-primary)" }}>
             <p>Here is your personalized cheatsheet!</p>
           </div>
         </div>
@@ -272,9 +273,9 @@ export default function CheatsheetPage() {
           <div className="space-y-4">
 
             {/* Profile Summary */}
-            <div className="rounded-xl border-2 p-4 mb-1" style={{ borderColor: "#A8D5CF", backgroundColor: "#F0FAF8" }}>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "#5B9D93" }}>Your Profile</h3>
-              <div className="space-y-1 text-sm" style={{ color: "#111827" }}>
+            <div className="rounded-xl border-2 p-4 mb-1" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-accent-light)" }}>
+              <h3 className="text-sm font-bold mb-2" style={{ color: "var(--accent)" }}>Your Profile</h3>
+              <div className="space-y-1 text-sm" style={{ color: "var(--text-primary)" }}>
                 {session.P1Q1 && session.P1Q1 !== "age18plus" && (
                   <p>Age: {session.P1Q1 === "age16to17" ? "16-17" : "Under 16"}</p>
                 )}
@@ -298,32 +299,32 @@ export default function CheatsheetPage() {
 
             {/* Documents */}
             {sections.documents && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Document Checklist</h3>
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Document Checklist</h3>
                 {renderLines(sections.documents)}
               </div>
             )}
 
             {/* Tips */}
             {sections.tips && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#F59E0B", backgroundColor: "#FFFBEB" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#B45309" }}>Tips from Experience</h3>
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--tip-border)", backgroundColor: "var(--bg-tip)" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--tip-text)" }}>Tips from Experience</h3>
                 {renderLines(sections.tips)}
               </div>
             )}
 
             {/* Cost */}
             {sections.cost && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Cost</h3>
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Cost</h3>
                 {renderLines(sections.cost)}
               </div>
             )}
 
             {/* Steps */}
             {sections.steps && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "#A8D5CF", backgroundColor: "#FFFFFF" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "#5B9D93" }}>Your Steps</h3>
+              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
+                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Your Steps</h3>
                 {renderLines(sections.steps)}
               </div>
             )}
@@ -332,18 +333,18 @@ export default function CheatsheetPage() {
             <div className="flex flex-col gap-2 mt-4">
               <button onClick={() => setShowSaveModal(true)}
                 className="w-full py-3 rounded-xl text-white text-sm font-medium"
-                style={{ backgroundColor: "#0f766e" }}>
+                style={{ backgroundColor: "var(--accent-dark)" }}>
                 Save to My Repo
               </button>
               <div className="flex gap-3">
                 <button onClick={() => navigate("/decision-tree")}
                   className="flex-1 py-2.5 rounded-xl text-sm font-medium border-2"
-                  style={{ borderColor: "#5B9D93", color: "#5B9D93" }}>
+                  style={{ borderColor: "var(--accent)", color: "#var(--accent)" }}>
                   Start Over
                 </button>
                 <button onClick={() => navigate("/")}
                   className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium"
-                  style={{ backgroundColor: "#5B9D93" }}>
+                  style={{ backgroundColor: "#var(--accent)" }}>
                   Home
                 </button>
               </div>
@@ -379,7 +380,7 @@ export default function CheatsheetPage() {
               style={{
                 width: "100%",
                 padding: "12px",
-                background: "#0f766e",
+                background: "var(--accent-dark)",
                 color: "#fff",
                 borderRadius: "12px",
                 fontWeight: "600",
@@ -394,7 +395,7 @@ export default function CheatsheetPage() {
                 width: "100%",
                 padding: "12px",
                 background: "transparent",
-                color: "#6B7280",
+                color: "var(--text-muted)",
                 fontSize: "13px"
               }}>
               No thanks, I'll screenshot
@@ -422,7 +423,7 @@ export default function CheatsheetPage() {
             <h2 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>
               Save your Cheatsheet
             </h2>
-            <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "20px" }}>
               Cheatsheet will be saved to your ClearPath account. Access it anytime.
             </p>
             <button
@@ -430,7 +431,7 @@ export default function CheatsheetPage() {
               style={{
                 width: "100%",
                 padding: "12px",
-                background: "#0f766e",
+                background: "var(--accent-dark)",
                 color: "#fff",
                 borderRadius: "12px",
                 fontWeight: "600",
@@ -445,7 +446,7 @@ export default function CheatsheetPage() {
                 width: "100%",
                 padding: "12px",
                 background: "transparent",
-                color: "#6B7280",
+                color: "var(--text-muted)",
                 fontSize: "13px"
               }}>
               No thanks, I'll screenshot
@@ -453,6 +454,7 @@ export default function CheatsheetPage() {
           </div>
         </div>
       )}
+      <BottomBar />
     </div>
   );
 }

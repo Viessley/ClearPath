@@ -1,5 +1,5 @@
-import { HamburgerIcon, AnnouncementIcon, RepoIcon, SunIcon, MoonIcon } from "../../icons/System"
-import { useState } from 'react'
+import { AnnouncementIcon, SunIcon, MoonIcon } from "../../icons/System"
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import logo from '../../assets/clearpath-logo.png'
 
@@ -11,48 +11,20 @@ export default function TopBar() {
     return localStorage.getItem('announcementSeen') !== 'true'
   })
 
-  const [showRepo, setShowRepo] = useState(false)
-  const [kits, setKits] = useState([])
-  const [selected, setSelected] = useState([])
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem('darkMode') === 'true';
   });
-
-  async function fetchKits() {
-    const userId = localStorage.getItem('userId')
-    if (!userId) return
-    const res = await fetch(`https://clearpath-backend-sc9k.onrender.com/api/kits/list/${userId}`)
-    const data = await res.json()
-    setKits(data)
-  }
-
-  function toggleSelect(kitId) {
-    setSelected(prev =>
-      prev.includes(kitId) ? prev.filter(id => id !== kitId) : [...prev, kitId]
-    )
-  }
-
-  async function deleteSelected() {
-    for (const kitId of selected) {
-      await fetch(`https://clearpath-backend-sc9k.onrender.com/api/kits/${kitId}`, {
-        method: 'DELETE'
-      })
-    }
-    setSelected([])
-    setShowDeleteConfirm(false)
-    fetchKits()
-  }
+  
 
   return (
     <>
       {/* TopBar */}
-      <div className="flex items-center justify-between px-5 py-4 bg-white border-b border-gray-100">
+      <div className="fixed top-0 left-0 right-0 max-w-sm mx-auto z-50 bg-white border-b border-gray-100 flex items-center justify-between px-5 py-4">
         {localStorage.getItem('token') ? (
           <div style={{ position: "relative" }}>
             <button
-              onClick={() => setShowUserMenu(!showUserMenu)}
+              onClick={() => setShowUserMenu(!showUserMenu)}  
               style={{ fontSize: "13px", fontWeight: "600", color: "#0f766e" }}>
               {localStorage.getItem('nickname') || 'Me'} ▾
             </button>
@@ -158,100 +130,6 @@ export default function TopBar() {
         </div>
       )}
 
-      {/* Repo rightside drawer */}
-      {showRepo && (
-        <>
-          {/* cover */}
-          <div
-            onClick={() => setShowRepo(false)}
-            style={{
-              position: "fixed",
-              top: 0, left: 0, right: 0, bottom: 0,
-              background: "rgba(0,0,0,0.4)",
-              zIndex: 998,
-            }}
-          />
-          {/* drawer */}
-          <div style={{
-            position: "fixed",
-            top: 0, right: 0, bottom: 0,
-            width: "80%",
-            maxWidth: "320px",
-            background: "#fff",
-            zIndex: 999,
-            padding: "24px 16px",
-            overflowY: "auto",
-          }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-              <h2 style={{ fontSize: "16px", fontWeight: "700" }}>My Repo</h2>
-              {selected.length > 0 && (
-                <button
-                  onClick={() => setShowDeleteConfirm(true)}
-                  style={{ fontSize: "13px", color: "#ef4444", fontWeight: "600" }}>
-                  Delete ({selected.length})
-                </button>
-              )}
-            </div>
-
-            {kits.length === 0 ? (
-              <p style={{ fontSize: "13px", color: "#6B7280" }}>No saved reports yet.</p>
-            ) : (
-              kits.map(kit => (
-                <div key={kit.id}
-                  onClick={() => { setShowRepo(false); navigate('/kit/' + kit.id); }}
-                  style={{
-                    cursor: "pointer",
-                    display: "flex", alignItems: "center", gap: "12px",
-                    padding: "12px", borderRadius: "12px",
-                    border: "1px solid #e5e7eb", marginBottom: "8px",
-                    backgroundColor: selected.includes(kit.id) ? "#f0f9f8" : "#fff"
-                  }}>
-                  <input
-                    type="checkbox"
-                    checked={selected.includes(kit.id)}
-                    onChange={() => toggleSelect(kit.id)}
-                  />
-                  <div>
-                    <p style={{ fontSize: "14px", fontWeight: "600" }}>{kit.title}</p>
-                    <p style={{ fontSize: "12px", color: "#6B7280" }}>
-                      #CP{kit.id} · {kit.createdAt?.slice(0, 10)}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-
-            {/* double check delete */}
-            {showDeleteConfirm && (
-              <div style={{
-                position: "fixed",
-                top: 0, left: 0, right: 0, bottom: 0,
-                background: "rgba(0,0,0,0.5)",
-                zIndex: 1000,
-                display: "flex", alignItems: "center", justifyContent: "center",
-                padding: "24px"
-              }}>
-                <div style={{ background: "#fff", borderRadius: "16px", padding: "24px", width: "100%" }}>
-                  <p style={{ fontSize: "15px", fontWeight: "600", marginBottom: "8px" }}>
-                    Delete {selected.length} report{selected.length > 1 ? "s" : ""}?
-                  </p>
-                  <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
-                    This cannot be undone.
-                  </p>
-                  <button onClick={deleteSelected}
-                    style={{ width: "100%", padding: "12px", background: "#ef4444", color: "#fff", borderRadius: "12px", fontWeight: "600", marginBottom: "8px" }}>
-                    Yes, delete
-                  </button>
-                  <button onClick={() => setShowDeleteConfirm(false)}
-                    style={{ width: "100%", padding: "12px", color: "#6B7280", fontSize: "13px" }}>
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-      )}
     </>
   )
 }
