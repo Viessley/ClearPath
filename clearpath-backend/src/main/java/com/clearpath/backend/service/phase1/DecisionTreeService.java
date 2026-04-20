@@ -79,14 +79,18 @@ public class DecisionTreeService {
             );
             Map<String, Object> response = new HashMap<>();
             if (agreementCountries.contains(value)) {
-                response.put("type", "NEXT_QUESTION");
+                response.put("type", "ANSWER");
                 response.put("feedback", "Great! Your country has a licence exchange agreement with Ontario.");
                 response.put("nextQuestionId", null);
                 response.put("done", true);
             } else {
+                Map<String, Object> nextQ = getQuestion("P1Q3.2NotAgreement");
                 response.put("type", "NEXT_QUESTION");
                 response.put("feedback", "Your country does not have a direct exchange agreement. Let's check your experience.");
                 response.put("nextQuestionId", "P1Q3.2NotAgreement");
+                response.put("question", nextQ.get("question"));
+                response.put("questionId", "P1Q3.2NotAgreement");
+                response.put("options", nextQ.get("options"));
                 response.put("done", false);
             }
             return response;
