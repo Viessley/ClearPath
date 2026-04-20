@@ -5,6 +5,7 @@ import com.clearpath.backend.repository.KnowledgeBaseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,6 @@ public class KnowledgeService {
     public Map<String, Object> buildCheatsheet(Map<String, String> session) {
         String topic = mapTopic(session);
         String subtopic = mapSubtopic(session);
-
         Map<String, Object> response = new HashMap<>();
 
         if (topic == null) {
@@ -50,7 +50,15 @@ public class KnowledgeService {
         response.put("topic", topic);
         response.put("subtopic", subtopic);
 
+        String cheatsheet = "**Your Steps:**\n" + formatSteps(kb.getSteps()) +
+                "\n**Document Checklist:**\n" + formatDocuments(kb.getDocuments()) +
+                "\n**Cost:**\n" + (kb.getFees() != null ? kb.getFees() : "") +
+                "\n**Tips:**\n" + formatTips(kb.getTips());
+
+        response.put("cheatsheet", cheatsheet);
+
         return response;
+
     }
 
     public String retrieveForAI(Map<String, String> session) {
@@ -131,5 +139,53 @@ public class KnowledgeService {
             if ("MoreThen2".equals(experience)) return "non_agreement_record_over_2_years";
         }
         return null;
+    }
+
+    private String formatSteps(String stepsJson) {
+        if (stepsJson == null) return "";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Map<String, Object>> steps = mapper.readValue(stepsJson, List.class);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < steps.size(); i++) {
+                Map<String, Object> step = steps.get(i);
+                sb.append(i + 1).append(". ").append(step.get("title")).append("\n");
+                sb.append("   - ").append(step.get("description")).append("\n");
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return stepsJson;
+        }
+    }
+
+    private String formatDocuments(String docsJson) {
+        if (docsJson == null) return "";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Map<String, Object>> docs = mapper.readValue(docsJson, List.class);
+            StringBuilder sb = new StringBuilder();
+            sb.append("| Document | Requirement |\n");
+            for (Map<String, Object> doc : docs) {
+                sb.append("| ").append(doc.get("name")).append(" | ").append(doc.get("requirement")).append(" |\n");
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return docsJson;
+        }
+    }
+
+    private String formatTips(String tipsJson) {
+        if (tipsJson == null) return "";
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            List<Map<String, Object>> tips = mapper.readValue(tipsJson, List.class);
+            StringBuilder sb = new StringBuilder();
+            for (Map<String, Object> tip : tips) {
+                sb.append("- ").append(tip.get("tip")).append("\n");
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return tipsJson;
+        }
     }
 }
