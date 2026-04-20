@@ -6,6 +6,7 @@ import CheatsheetPage from './Pages/CheatsheetPage'
 import AuthPage from './Pages/AuthPage'
 import AuthCallbackPage from './Pages/AuthCallbackPage'
 import KitViewPage from './Pages/KitViewPage'
+import QuizPage from './pages/QuizPage'
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Route path="/auth" element={<AuthPage />} />
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/kit/:id" element={<KitViewPage />} />
+        <Route path="/quiz" element={<QuizPage />} />
       </Routes>
     </BrowserRouter>
   )
