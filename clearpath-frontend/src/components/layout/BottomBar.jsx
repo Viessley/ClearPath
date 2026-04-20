@@ -39,7 +39,8 @@ export default function BottomBar() {
   return (
     <>
       {/* Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center bg-white border-t border-gray-100 max-w-sm mx-auto px-10" style={{ height: "60px" }}>
+      <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center max-w-sm mx-auto px-10"
+  style={{ height: "60px", backgroundColor: "var(--bg-card)", borderTop: "1px solid var(--border-light)" }}>
 
         {/* Camera */}
         <button className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-teal-700">
@@ -74,7 +75,7 @@ export default function BottomBar() {
             top: 0, right: 0, bottom: 0,
             width: "80%",
             maxWidth: "320px",
-            background: "#fff",
+            background: "var(--bg-card)",
             zIndex: 999,
             padding: "24px 16px",
             overflowY: "auto",
@@ -100,7 +101,7 @@ export default function BottomBar() {
                     cursor: "pointer",
                     display: "flex", alignItems: "center", gap: "12px",
                     padding: "12px", borderRadius: "12px",
-                    border: "1px solid #e5e7eb", marginBottom: "8px",
+                    border: "1px solid var(--border-light)", marginBottom: "8px",
                     backgroundColor: selected.includes(kit.id) ? "var(--bg-page)" : "var(--bg-card)"
                   }}>
                   <input
@@ -127,7 +128,7 @@ export default function BottomBar() {
                 display: "flex", alignItems: "center", justifyContent: "center",
                 padding: "24px"
               }}>
-                <div style={{ background: "#fff", borderRadius: "16px", padding: "24px", width: "100%" }}>
+                <div style={{ background: "var(--bg-card)", borderRadius: "16px", padding: "24px", width: "100%" }}>
                   <p style={{ fontSize: "15px", fontWeight: "600", marginBottom: "8px" }}>
                     Delete {selected.length} report{selected.length > 1 ? "s" : ""}?
                   </p>
