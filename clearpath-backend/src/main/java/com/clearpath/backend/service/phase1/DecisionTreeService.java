@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 
 @Service
 public class DecisionTreeService {
@@ -25,13 +26,36 @@ public class DecisionTreeService {
     @Autowired
     private DtTransitionRepository transitionRepository;
 
+    private List<Map<String, Object>> countryOptions = null;
+
     public Map<String, Object> getQuestion(String questionId) {
+
         DtQuestion question = questionRepository.findById(questionId).orElse(null);
-        if(question == null){
-            return Map.of("error","Question not found:" + questionId);
+        if (question == null) {
+            return Map.of("error", "Question not found:" + questionId);
         }
 
-        List<DtOption>options = optionRepository.findByQuestionId(questionId);
+        // Special case: P1Q3.1 country selection — dynamic, cached
+        if ("P1Q3.1".equals(questionId)) {
+            if (countryOptions == null) {
+                countryOptions = new ArrayList<>();
+                String[] codes = java.util.Locale.getISOCountries();
+                for (String code : codes) {
+                    java.util.Locale locale = new java.util.Locale("", code);
+                    Map<String, Object> opt = new HashMap<>();
+                    opt.put("value", code);
+                    opt.put("label", locale.getDisplayCountry(java.util.Locale.ENGLISH));
+                    countryOptions.add(opt);
+                }
+            }
+            Map<String, Object> response = new HashMap<>();
+            response.put("questionId", questionId);
+            response.put("question", question.getQuestionText());
+            response.put("options", countryOptions);
+            return response;
+        }
+
+        List<DtOption> options = optionRepository.findByQuestionId(questionId);
 
         Map<String, Object> response = new HashMap<>();
         response.put("questionId", questionId);
