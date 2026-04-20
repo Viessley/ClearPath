@@ -72,6 +72,26 @@ public class DecisionTreeService {
 
     public Map<String, Object>handleAnswer(String questionId, String value){
 
+        if ("P1Q3.1".equals(questionId)) {
+            List<String> agreementCountries = List.of(
+                    "US", "GB", "DE", "FR", "AU", "NZ", "KR", "JP", "AT", "BE", "CH",
+                    "HU", "DK", "IM", "IE", "TW"
+            );
+            Map<String, Object> response = new HashMap<>();
+            if (agreementCountries.contains(value)) {
+                response.put("type", "NEXT_QUESTION");
+                response.put("feedback", "Great! Your country has a licence exchange agreement with Ontario.");
+                response.put("nextQuestionId", null);
+                response.put("done", true);
+            } else {
+                response.put("type", "NEXT_QUESTION");
+                response.put("feedback", "Your country does not have a direct exchange agreement. Let's check your experience.");
+                response.put("nextQuestionId", "P1Q3.2NotAgreement");
+                response.put("done", false);
+            }
+            return response;
+        }
+
         DtTransition transition = transitionRepository.findByQuestionIdAndAnswerValue(questionId, value);
 
         if(transition == null){
