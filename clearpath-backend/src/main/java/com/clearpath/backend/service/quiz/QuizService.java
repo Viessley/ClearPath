@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,8 +36,8 @@ public class QuizService {
 
         List<Long> dueIds = due.stream().map(UserQuizRecord::getQuestionId).toList();
         List<QuizQuestion> dueQuestions = dueIds.isEmpty()
-                ? List.of()
-                : questionRepository.findAllById(dueIds);
+                ? new ArrayList<>()
+                : new ArrayList<>(questionRepository.findAllById(dueIds));
 
         // Top up with random questions if not enough due questions
         if (dueQuestions.size() < limit) {
