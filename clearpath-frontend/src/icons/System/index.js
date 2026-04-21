@@ -8,6 +8,5 @@ export { default as RepoIcon } from './RepoIcon'
 export { default as SunIcon } from './SunIcon'
 export { default as MoonIcon } from './MoonIcon'
 export { default as QuizIcon } from './QuizIcon'
-export { default as G1QuizIcon } from './G1QuizIcon'
-export { default as M1QuizIcon } from './M1QuizIcon'
+
 
