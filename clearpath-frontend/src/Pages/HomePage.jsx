@@ -17,14 +17,7 @@ const SERVICES = [
       { id: "fix-tickets", icon: <FixTicketsIcon />, title: "Fix tickets", subtitle: "Pay, reduce, or fight the ticket." },
     ],
   },
-  {
-    category: "Visa Services",
-    bgColor: "var(--bg-accent-blue)",
-    items: [
-      { id: "study-permit", icon: <StudyPermitIcon />, title: "Study Permit", subtitle: "Apply or extend your study permit" },
-      { id: "work-permit", icon: <WorkPermitIcon />, title: "Work Permit", subtitle: "Open or employer-specific permits" },
-    ],
-  },
+  
 ]
 
 export default function HomePage() {
