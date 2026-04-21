@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import TopBar from '../components/layout/TopBar'
 import BottomBar from '../components/layout/BottomBar'
+import { G1QuizIcon, M1QuizIcon } from '../icons/Service'
 
 export default function QuizHubPage() {
   const navigate = useNavigate()
@@ -26,7 +27,7 @@ export default function QuizHubPage() {
           style={{ backgroundColor: "var(--bg-card)", border: "2px solid var(--border-color)" }}>
           <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: "var(--bg-accent)" }}>
-            <span style={{ fontSize: 28 }}>🚗</span>
+            <span style={{ fontSize: 28 }}><G1QuizIcon/></span>
           </div>
           <div className="flex-1">
             <p className="font-bold" style={{ color: "var(--text-primary)" }}>G1 Knowledge Test</p>
@@ -42,7 +43,7 @@ export default function QuizHubPage() {
           style={{ backgroundColor: "var(--bg-card)", border: "2px solid var(--border-light)", opacity: 0.6 }}>
           <div className="w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0"
             style={{ backgroundColor: "var(--bg-accent)" }}>
-            <span style={{ fontSize: 28 }}>🏍️</span>
+            <span style={{ fontSize: 28 }}><M1QuizIcon/></span>
           </div>
           <div className="flex-1">
             <p className="font-bold" style={{ color: "var(--text-primary)" }}>M1 Knowledge Test</p>
