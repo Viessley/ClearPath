@@ -1,4 +1,4 @@
-import { CameraIcon, RepoIcon } from '../../icons/System'
+import { CameraIcon, RepoIcon, QuizIcon } from '../../icons/System'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -40,8 +40,16 @@ export default function BottomBar() {
     <>
       {/* Bottom Bar */}
       <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center max-w-sm mx-auto px-10"
-  style={{ height: "60px", backgroundColor: "var(--bg-card)", borderTop: "1px solid var(--border-light)" }}>
+        style={{ height: "60px", backgroundColor: "var(--bg-card)", borderTop: "1px solid var(--border-light)" }}>
 
+        {/* Quiz */}
+        <button
+          onClick={() => navigate('/quiz-hub')}
+          className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-teal-700">
+          <QuizIcon size={22} />
+          <span style={{ fontSize: "10px" }}>Quiz</span>
+        </button>
+        
         {/* Camera */}
         <button className="flex flex-col items-center gap-0.5 text-gray-400 hover:text-teal-700">
           <CameraIcon size={22} />

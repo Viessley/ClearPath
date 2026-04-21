@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import TopBar from '../components/TopBar'
-import BottomBar from '../components/BottomBar'
+import TopBar from "../components/layout/TopBar";
+import BottomBar from '../components/layout/BottomBar'
 
 const API_BASE = 'https://clearpath-backend-sc9k.onrender.com/api/quiz'
 
