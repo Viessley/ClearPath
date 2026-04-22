@@ -56,6 +56,10 @@ public class KnowledgeService {
                 "\n**Tips:**\n" + formatTips(kb.getTips());
 
         response.put("cheatsheet", cheatsheet);
+        response.put("overview",      kb.getOverview());
+        response.put("cheatsheetTips", kb.getCheatsheetTips());
+        response.put("whatToPrepare",  kb.getWhatToPrepare());
+        response.put("sources",        kb.getSources());
 
         return response;
 
