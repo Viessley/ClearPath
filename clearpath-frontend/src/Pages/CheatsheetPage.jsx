@@ -349,13 +349,11 @@ export default function CheatsheetPage() {
   function renderFees(fees) {
     if (!fees) return null;
 
-    if (typeof fees === "string") {
-      return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6, margin: 0 }}>{fees}</p>;
-    }
-
     let parsed = fees;
     if (typeof fees === "string") {
-      try { parsed = JSON.parse(fees); } catch { return null; }
+      try { parsed = JSON.parse(fees); } catch {
+        return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6, margin: 0 }}>{fees}</p>;
+      }
     }
 
     if (!Array.isArray(parsed)) return null;
