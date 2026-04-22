@@ -312,7 +312,6 @@ export default function CheatsheetPage() {
     if (typeof tips === "string") {
       try { parsed = JSON.parse(tips); } catch { return null; }
     }
-    // Filter out TODO items for display
     const isPermitShortly = session?.["P1Q2.1IS"] === "validLessThan6Months";
     const visible = parsed.filter(t => {
       if (!isPermitShortly && t.tip.includes("Study Permit expiry")) return false;
@@ -320,43 +319,78 @@ export default function CheatsheetPage() {
       return true;
     });
 
+    const colors = [
+      { bg: "#F0FAF8", border: "#5B9D93" },
+      { bg: "#FFF8E7", border: "#F59E0B" },
+      { bg: "#F0F4FF", border: "#6366F1" },
+      { bg: "#FFF0F0", border: "#EF4444" },
+      { bg: "#F0FFF4", border: "#10B981" },
+    ]
+
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {visible.map((item, i) => (
-          <div key={i} style={{
-            display: "flex", gap: "10px", alignItems: "flex-start",
-            padding: "8px 0",
-            borderBottom: i < visible.length - 1 ? "1px solid var(--tip-border, #F59E0B)22" : "none"
-          }}>
-            <p style={{ fontSize: "13px", color: "var(--text-primary)", margin: 0, lineHeight: 1.6 }}>
-              {item.tip}
-            </p>
-          </div>
-        ))}
+        {visible.map((item, i) => {
+          const color = colors[i % colors.length]
+          return (
+            <div key={i} style={{
+              backgroundColor: color.bg,
+              borderLeft: `4px solid ${color.border}`,
+              borderRadius: "8px",
+              padding: "10px 14px",
+            }}>
+              <p style={{ fontSize: "13px", color: "var(--text-primary)", margin: 0, lineHeight: 1.6 }}>
+                {item.tip}
+              </p>
+            </div>
+          )
+        })}
       </div>
-    );
+    )
   }
 
   // Parse fees
   function renderFees(fees) {
     if (!fees) return null;
+
     if (typeof fees === "string") {
       return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6, margin: 0 }}>{fees}</p>;
     }
+
     let parsed = fees;
-    if (Array.isArray(fees)) {
-      return (
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-          {parsed.map((f, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: i < parsed.length - 1 ? "1px solid var(--border-light)" : "none" }}>
-              <span style={{ fontSize: "13px", color: "var(--text-primary)" }}>{f.item}</span>
-              <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--accent-dark)" }}>{f.amount}</span>
-            </div>
-          ))}
-        </div>
-      );
+    if (typeof fees === "string") {
+      try { parsed = JSON.parse(fees); } catch { return null; }
     }
-    return null;
+
+    if (!Array.isArray(parsed)) return null;
+
+    const total = parsed.reduce((sum, f) => {
+      const num = parseFloat(f.amount.replace("$", ""));
+      return isNaN(num) ? sum : sum + num;
+    }, 0);
+
+    return (
+      <div>
+        {parsed.map((f, i) => (
+          <div key={i} style={{
+            display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+            padding: "10px 0",
+            borderBottom: "1px solid var(--border-light)",
+            gap: "12px"
+          }}>
+            <div>
+              <span style={{ fontSize: "13px", color: "var(--text-primary)", fontWeight: "500" }}>{f.item}</span>
+              {f.note && <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0 0" }}>{f.note}</p>}
+              {f.when && <p style={{ fontSize: "11px", color: "var(--accent)", margin: "2px 0 0 0" }}>{f.when}</p>}
+            </div>
+            <span style={{ fontSize: "14px", fontWeight: "700", color: "var(--accent-dark)", flexShrink: 0 }}>{f.amount}</span>
+          </div>
+        ))}
+        <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0 0 0", marginTop: "4px" }}>
+          <span style={{ fontSize: "13px", fontWeight: "700", color: "var(--text-primary)" }}>Total</span>
+          <span style={{ fontSize: "14px", fontWeight: "700", color: "var(--accent-dark)" }}>${total.toFixed(2)}</span>
+        </div>
+      </div>
+    );
   }
 
   // Parse sources
