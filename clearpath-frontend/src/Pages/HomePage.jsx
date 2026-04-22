@@ -29,7 +29,7 @@ export default function HomePage() {
     <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
-      <div className="flex-1 px-4 pt-4 pb-32">
+      <div className="flex-1 px-4 pt-20 pb-32">
         {/* Greeting */}
         <div className="flex items-center gap-3 mb-4">
           <Mascot />
