@@ -14,14 +14,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     @Column(nullable = false)
     private String passwordHash;
 
     private String nickname;
 
     private String gender;
-
-    private LocalDateTime createdAt;
 
     private LocalDateTime lastLogin;
 
