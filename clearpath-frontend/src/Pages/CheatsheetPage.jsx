@@ -59,6 +59,17 @@ function buildSituationLines(session) {
     if (label) lines.push(label);
   }
 
+  // Experience
+  if (session["P1Q3.2NotAgreement"]) {
+    const expMap = {
+      "Less1Year": "Driving experience: Less than 1 year",
+      "1To2": "Driving experience: 1 to 2 years",
+      "MoreThen2": "Driving experience: 2+ years"
+    };
+    const label = expMap[session["P1Q3.2NotAgreement"]];
+    if (label) lines.push(label);
+  }
+
   // Country
   if (session["P1Q3.1"]) {
     try {
@@ -67,6 +78,16 @@ function buildSituationLines(session) {
     } catch (e) {
       lines.push(`Licence from: ${session["P1Q3.1"]}`);
     }
+  }
+
+  // Official driving record
+  if (session["P1Q3.3NotAgreement"]) {
+    const recMap = {
+      "Yes": "Has official driving record",
+      "No": "No official driving record"
+    };
+    const label = recMap[session["P1Q3.3NotAgreement"]];
+    if (label) lines.push(label);
   }
 
   return lines;
@@ -345,24 +366,36 @@ export default function CheatsheetPage() {
     if (typeof sources === "string") {
       try { parsed = JSON.parse(sources); } catch { return null; }
     }
+
+    const official = parsed.filter(s => s.category === "official");
+    const reference = parsed.filter(s => s.category === "reference");
+
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-        {parsed.map((src, i) => (
-          <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
-            style={{
-              display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "10px 14px",
-              backgroundColor: "var(--bg-accent-light)",
-              borderRadius: "10px",
-              textDecoration: "none",
-              gap: "8px"
-            }}>
-            <span style={{ fontSize: "13px", color: "var(--accent-dark)", fontWeight: "500", lineHeight: 1.4 }}>
-              {src.title}
-            </span>
-            <span style={{ fontSize: "16px", flexShrink: 0 }}>→</span>
-          </a>
-        ))}
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+        {official.length > 0 && (
+          <div>
+            <p style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 8px 0" }}>Official Sources</p>
+            {official.map((src, i) => (
+              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", backgroundColor: "var(--bg-accent-light)", borderRadius: "10px", textDecoration: "none", gap: "8px", marginBottom: "6px" }}>
+                <span style={{ fontSize: "13px", color: "var(--accent-dark)", fontWeight: "500", lineHeight: 1.4 }}>{src.title}</span>
+                <span style={{ fontSize: "14px", flexShrink: 0 }}>→</span>
+              </a>
+            ))}
+          </div>
+        )}
+        {reference.length > 0 && (
+          <div>
+            <p style={{ fontSize: "11px", fontWeight: "700", color: "var(--text-muted)", letterSpacing: "0.08em", textTransform: "uppercase", margin: "0 0 8px 0" }}>Additional References</p>
+            {reference.map((src, i) => (
+              <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", backgroundColor: "var(--bg-card)", border: "1px solid var(--border-light)", borderRadius: "10px", textDecoration: "none", gap: "8px", marginBottom: "6px" }}>
+                <span style={{ fontSize: "13px", color: "var(--text-secondary)", fontWeight: "500", lineHeight: 1.4 }}>{src.title}</span>
+                <span style={{ fontSize: "14px", flexShrink: 0 }}>→</span>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
