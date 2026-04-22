@@ -320,11 +320,8 @@ export default function CheatsheetPage() {
     });
 
     const colors = [
-      { bg: "#F0FAF8", border: "#5B9D93" },
-      { bg: "#FFF8E7", border: "#F59E0B" },
-      { bg: "#F0F4FF", border: "#6366F1" },
-      { bg: "#FFF0F0", border: "#EF4444" },
-      { bg: "#F0FFF4", border: "#10B981" },
+      { bg: "var(--bg-accent)", border: "var(--accent)" },
+      { bg: "var(--bg-accent-light)", border: "var(--accent-dark)" },
     ]
 
     return (
