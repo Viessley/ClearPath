@@ -363,7 +363,9 @@ export default function CheatsheetPage() {
 
     let parsed = fees;
     if (typeof fees === "string") {
-      try { parsed = JSON.parse(fees); } catch {
+      try {
+        parsed = JSON.parse(fees);
+      } catch {
         return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6, margin: 0 }}>{fees}</p>;
       }
     }
