@@ -285,14 +285,20 @@ export default function CheatsheetPage() {
   }
 
   // Parse cheatsheet_tips
-  function renderTips(tips) {
+  function renderTips(tips, session) {
     if (!tips) return null;
     let parsed = tips;
     if (typeof tips === "string") {
       try { parsed = JSON.parse(tips); } catch { return null; }
     }
     // Filter out TODO items for display
-    const visible = parsed.filter(t => !t.tip.startsWith("TODO"));
+    const isPermitShortly = session?.["P1Q2.1IS"] === "validLessThan6Months";
+    const visible = parsed.filter(t => {
+      if (!isPermitShortly && t.tip.includes("Study Permit expiry")) return false;
+      if (t.tip.startsWith("TODO")) return false;
+      return true;
+    });
+
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
         {visible.map((item, i) => (
@@ -457,7 +463,7 @@ export default function CheatsheetPage() {
             {/* KEY DECISIONS */}
             {data?.cheatsheet_tips && (
               <Section title="Key Decisions" accent="var(--tip-border)">
-                {renderTips(data.cheatsheet_tips)}
+                {renderTips(data.cheatsheet_tips, session)}
               </Section>
             )}
 
