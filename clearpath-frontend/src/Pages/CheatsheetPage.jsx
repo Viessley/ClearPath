@@ -1,36 +1,127 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
-import BottomBar from '../components/layout/BottomBar'
-import Mascot from "../components/shared/Mascot";
+import BottomBar from "../components/layout/BottomBar";
 
-const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/cheatsheet";
+const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api";
 
+// Session key → human-readable label
+const SESSION_LABELS = {
+  P1Q1: {
+    age18plus: null, // default, don't show
+    age16to17: "Age: 16–17",
+    underAge16: "Age: Under 16",
+    notSure: "Age: Not sure",
+  },
+  P1Q2: {
+    international_student: "International Student",
+    work_permit: "Work Permit Holder",
+    visitor: "Visitor",
+    permanent_resident: "Permanent Resident",
+    protected_person_refugee: "Protected Person / Refugee",
+    canadian_citizen: "Canadian Citizen",
+  },
+  P1Q2_1IS: {
+    validMoreThan6Months: "Study Permit: Valid 6+ months",
+    validLessThan6Months: "Study Permit: Valid less than 6 months",
+    expired: "Study Permit: Expired",
+  },
+  P1Q3: {
+    Yes: "Has a foreign driver's licence",
+    No: "No foreign driver's licence",
+  },
+};
+
+function buildSituationLines(session) {
+  const lines = [];
+
+  // Status
+  if (session.P1Q2) {
+    const label = SESSION_LABELS.P1Q2[session.P1Q2];
+    if (label) lines.push(label);
+  }
+
+  // Age (only if not default)
+  if (session.P1Q1 && session.P1Q1 !== "age18plus") {
+    const label = SESSION_LABELS.P1Q1[session.P1Q1];
+    if (label) lines.push(label);
+  }
+
+  // Study permit validity
+  if (session["P1Q2.1IS"]) {
+    const label = SESSION_LABELS.P1Q2_1IS[session["P1Q2.1IS"]];
+    if (label) lines.push(label);
+  }
+
+  // Foreign licence
+  if (session.P1Q3) {
+    const label = SESSION_LABELS.P1Q3[session.P1Q3];
+    if (label) lines.push(label);
+  }
+
+  // Country
+  if (session["P1Q3.1"]) {
+    try {
+      const countryName = new Intl.DisplayNames(["en"], { type: "region" }).of(session["P1Q3.1"]);
+      lines.push(`Licence from: ${countryName}`);
+    } catch (e) {
+      lines.push(`Licence from: ${session["P1Q3.1"]}`);
+    }
+  }
+
+  return lines;
+}
+
+// Section wrapper
+function Section({ title, accent, children, icon }) {
+  return (
+    <div style={{
+      backgroundColor: "var(--bg-card)",
+      border: `1.5px solid ${accent || "var(--border-color)"}`,
+      borderRadius: "16px",
+      padding: "20px",
+      marginBottom: "12px",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+        {icon && <span style={{ fontSize: "16px" }}>{icon}</span>}
+        <h3 style={{ fontSize: "13px", fontWeight: "700", color: accent || "var(--accent)", letterSpacing: "0.06em", textTransform: "uppercase" }}>
+          {title}
+        </h3>
+      </div>
+      {children}
+    </div>
+  );
+}
+
+// Loading animation
 function LoadingStages() {
   const [stage, setStage] = useState(0);
-  const stages = [
-    "Analyzing your situation...",
-    "Checking official requirements...",
-    "Building your personalized plan...",
-  ];
-
+  const stages = ["Pulling your data...", "Checking official requirements...", "Building your cheatsheet..."];
   useEffect(() => {
-    const t1 = setTimeout(() => setStage(1), 3000);
-    const t2 = setTimeout(() => setStage(2), 7000);
+    const t1 = setTimeout(() => setStage(1), 2000);
+    const t2 = setTimeout(() => setStage(2), 5000);
     return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
-
   return (
-    <div className="flex-1 flex flex-col items-center justify-center gap-4">
-      <div className="w-8 h-8 border-3 border-t-transparent rounded-full animate-spin"
-        style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }} />
-      <p className="text-sm font-medium" style={{ color: "var(--accent)" }}>{stages[stage]}</p>
-      <div className="flex gap-1.5">
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "16px", padding: "48px 24px" }}>
+      <div style={{
+        width: "36px", height: "36px",
+        border: "3px solid var(--border-color)",
+        borderTopColor: "var(--accent)",
+        borderRadius: "50%",
+        animation: "spin 0.8s linear infinite"
+      }} />
+      <p style={{ fontSize: "13px", fontWeight: "500", color: "var(--accent)" }}>{stages[stage]}</p>
+      <div style={{ display: "flex", gap: "6px" }}>
         {stages.map((_, i) => (
-          <div key={i} className="w-2 h-2 rounded-full transition-all duration-300"
-            style={{ backgroundColor: i <= stage ? "var(--accent" : "var(--bg-accent)" }} />
+          <div key={i} style={{
+            width: "6px", height: "6px", borderRadius: "50%",
+            backgroundColor: i <= stage ? "var(--accent)" : "var(--border-color)",
+            transition: "background-color 0.3s"
+          }} />
         ))}
       </div>
+      <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </div>
   );
 }
@@ -42,419 +133,452 @@ export default function CheatsheetPage() {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sections, setSections] = useState(null);
+  const [data, setData] = useState(null);
   const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
-  const [expandedDetails, setExpandedDetails] = useState({});
-  const [detailsLoading, setDetailsLoading] = useState({});
-  const [detailsContent, setDetailsContent] = useState({});
+  const situationLines = buildSituationLines(session);
 
   useEffect(() => {
     if (Object.keys(session).length === 0) {
-      setError("No session data. Please complete the decision tree first.");
+      setError("No session data found. Please complete the decision tree first.");
       setLoading(false);
       return;
     }
-    generateCheatsheet();
+    fetchCheatsheet();
   }, []);
 
-  async function generateCheatsheet() {
+  async function fetchCheatsheet() {
     try {
-
-      const res = await fetch(`${API_BASE}/generate`, {
+      const res = await fetch(`${API_BASE}/cheatsheet/generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ session }),
       });
-      const data = await res.json();
+      const json = await res.json();
 
-      if (data.error) {
-        setError(data.error);
-      } else if (data.cheatsheet === "No response from AI." || !data.cheatsheet ||
-        data.cheatsheet.includes("quota") ||
-        data.cheatsheet.includes("429") ||
-        data.cheatsheet.trim() === "") {
-        setError("Our AI is taking a break — the free API quota has been used up. Please try again in a few hours. (Yes, the developer is broke.)");
+      if (json.error) {
+        setError(json.error);
+      } else if (!json.cheatsheet || json.cheatsheet.trim() === "" ||
+        json.cheatsheet.includes("quota") || json.cheatsheet.includes("429")) {
+        setError("Our AI is taking a break — the free quota has been used up. Please try again in a few hours.");
       } else {
-        console.log("Raw cheatsheet:", data.cheatsheet);
-        setSections(parseCheatsheet(data.cheatsheet));
+        // Try to parse as structured JSON from knowledge_base
+        // Backend should return structured data — fallback to raw text
+        if (json.structured) {
+          setData(json.structured);
+        } else {
+          // fallback: wrap raw cheatsheet text so page still renders
+          setData({ raw: json.cheatsheet });
+        }
       }
     } catch (err) {
-      setError("Could not generate cheatsheet. Make sure the backend is running.");
+      setError("Could not load your cheatsheet. Please check your connection.");
     } finally {
       setLoading(false);
     }
   }
 
   async function handleSave() {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
-
-    const res = await fetch("https://clearpath-backend-sc9k.onrender.com/api/kits/save", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId: parseInt(userId),
-        title: "Ontario Driver's License",
-        serviceType: "drivers_license",
-        content: sections ? JSON.stringify(sections) : ""
-      }),
-    });
-
-    const data = await res.json();
-
-    if (data.kitID) {
-      setShowSaveModal(false);
-      alert("Saved! Your Report ID is #CP" + data.kitId);
-    }
-  }
-
-  async function fetchDetail(key, title) {
-    setDetailsLoading(prev => ({ ...prev, [key]: true }));
+    setSaveLoading(true);
     try {
-      const res = await fetch(`https://clearpath-backend-sc9k.onrender.com/api/drivers-license/ai/chat`, {
+      const token = localStorage.getItem("token");
+      const userId = localStorage.getItem("userId");
+
+      const res = await fetch(`${API_BASE}/kits/save`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          session,
-          userMessage: `Explain in detail: ${title}. Keep it under 80 words. Plain language. No filler.`
+          userId: parseInt(userId),
+          title: "Ontario Driver's Licence",
+          serviceType: "drivers_license",
+          content: data ? JSON.stringify(data) : ""
         }),
       });
-      const data = await res.json();
-      setDetailsContent(prev => ({ ...prev, [key]: data.message || "No details available." }));
-    } catch (err) {
-      setDetailsContent(prev => ({ ...prev, [key]: "Could not load details." }));
+      const result = await res.json();
+      if (result.kitId) {
+        setShowSaveModal(false);
+        alert("Saved! Your Report ID is #CP" + result.kitId);
+      }
+    } catch (e) {
+      alert("Save failed. Please try again.");
     } finally {
-      setDetailsLoading(prev => ({ ...prev, [key]: false }));
+      setSaveLoading(false);
     }
   }
 
-  // Parse markdown into 4 sections
-  function parseCheatsheet(text) {
-    const result = { steps: "", documents: "", cost: "", tips: "" };
-    const parts = text.split("**");
-
-    for (let i = 0; i < parts.length; i++) {
-      const label = parts[i].toLowerCase().trim();
-      if (label === "your steps:") result.steps = parts[i + 1] || "";
-      if (label === "document checklist:") result.documents = parts[i + 1] || "";
-      if (label === "cost:") result.cost = parts[i + 1] || "";
-      if (label === "tips:") result.tips = parts[i + 1] || "";
+  // Parse steps array — take first 3, strip description details
+  function renderSteps(steps) {
+    if (!steps) return null;
+    let parsed = steps;
+    if (typeof steps === "string") {
+      try { parsed = JSON.parse(steps); } catch { return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6 }}>{steps}</p>; }
     }
-    return result;
+    const topSteps = parsed.slice(0, 3);
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {topSteps.map((step, i) => (
+          <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "12px" }}>
+            <div style={{
+              width: "24px", height: "24px", borderRadius: "50%",
+              backgroundColor: "var(--accent)", color: "#fff",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "11px", fontWeight: "700", flexShrink: 0
+            }}>{i + 1}</div>
+            <p style={{ fontSize: "14px", fontWeight: "600", color: "var(--text-primary)", margin: 0, paddingTop: "3px" }}>
+              {step.title}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
   }
 
-  // Render lines as clean list
-  function renderLines(text) {
-    return text
-      .split("\n")
-      .map((line) => line.trim())
-      .filter((line) => line && !line.includes("---"))
-      .map((line, i) => {
-        // Table rows
-        if (line.startsWith("|")) {
-          const cells = line.split("|").filter((c) => c.trim());
-          if (cells.length === 2 && cells[0].trim() !== "Document") {
-            const hasDetails = cells[1].includes("[Details]");
-            const requirement = cells[1].replace("[Details]", "").trim();
-            const docName = cells[0].trim();
-            const key = `detail-${i}`;
-            const isOpen = expandedDetails[key];
+  // Parse documents
+  function renderDocuments(docs) {
+    if (!docs) return null;
+    let parsed = docs;
+    if (typeof docs === "string") {
+      try { parsed = JSON.parse(docs); } catch { return <p style={{ fontSize: "13px", color: "var(--text-secondary)" }}>{docs}</p>; }
+    }
+    return (
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        {parsed.map((doc, i) => (
+          <div key={i} style={{
+            display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+            padding: "10px 0",
+            borderBottom: i < parsed.length - 1 ? "1px solid var(--border-light)" : "none",
+            gap: "12px"
+          }}>
+            <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-primary)", flexShrink: 0, maxWidth: "45%" }}>
+              {doc.name}
+            </span>
+            <span style={{ fontSize: "12px", color: "var(--text-secondary)", textAlign: "right" }}>
+              {doc.requirement}
+              {doc.used_at && <span style={{ display: "block", color: "var(--accent)", marginTop: "2px", fontSize: "11px" }}>Used at: {doc.used_at}</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-            return (
-              <div key={i}>
-                <div className="flex justify-between py-2 border-b" style={{ borderColor: "var(--border-light)" }}>
-                  <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>{docName}</span>
-                  <span className="text-xs text-right" style={{ color: "var(--text-secondary)", maxWidth: "55%" }}>{requirement}</span>
-                </div>
-                {hasDetails && (
-                  <button
-                    onClick={() => {
-                      setExpandedDetails(prev => ({ ...prev, [key]: !prev[key] }));
-                      if (!detailsContent[key] && !detailsLoading[key]) {
-                        fetchDetail(key, docName);
-                      }
-                    }}
-                    className="text-xs font-medium mt-1 mb-2"
-                    style={{ color: "var(--accent)" }}>
-                    {isOpen ? "Hide details" : "Show details"}
-                  </button>
-                )}
-                {isOpen && (
-                  <div className="text-xs rounded-lg px-3 py-2 mb-2" style={{ backgroundColor: "var(--bg-accent-light)", color: "var(--text-secondary)" }}>
-                    {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
-                  </div>
-                )}
-              </div>
-            );
-          }
-          return null;
-        }
-        // Numbered steps
-        if (/^\d+\./.test(line)) {
-          return (
-            <div key={i} className="flex items-start gap-3 py-2">
-              <div className="w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold text-white"
-                style={{ backgroundColor: "var(--accent)" }}>
-                {line.match(/^(\d+)/)[1]}
-              </div>
-              <p className="text-sm" style={{ color: "var(--text-primary)" }}>{line.replace(/^\d+\.\s*/, "")}</p>
-            </div>
-          );
-        }
-        // Sub-items (lines starting with -)
-        if (line.startsWith("-")) {
-          const hasDetails = line.includes("[Details]");
-          const cleanLine = line.replace("[Details]", "").replace(/^-\s*/, "").trim();
-          const key = `detail-${i}`;
-          const isOpen = expandedDetails[key];
+  // Parse what_to_prepare
+  function renderWhatToPrepare(items) {
+    if (!items) return null;
+    let parsed = items;
+    if (typeof items === "string") {
+      try { parsed = JSON.parse(items); } catch { return null; }
+    }
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {parsed.map((item, i) => (
+          <div key={i} style={{
+            backgroundColor: "var(--bg-accent-light)",
+            borderRadius: "10px",
+            padding: "12px 14px",
+          }}>
+            <p style={{ fontSize: "13px", fontWeight: "600", color: "var(--text-primary)", margin: "0 0 4px 0" }}>
+              {item.action}
+            </p>
+            <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>
+              {item.why}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
-          return (
-            <div key={i}>
-              <p className="text-sm pl-9 py-0.5" style={{ color: "var(--text-secondary)" }}>
-                - {cleanLine}
-              </p>
-              {hasDetails && (
-                <button
-                  onClick={() => {
-                    setExpandedDetails(prev => ({ ...prev, [key]: !prev[key] }));
-                    if (!detailsContent[key] && !detailsLoading[key]) {
-                      fetchDetail(key, cleanLine);
-                    }
-                  }}
-                  className="text-xs font-medium ml-9 mt-1 mb-2"
-                  style={{ color: "var(--accent)" }}>
-                  {isOpen ? "Hide details" : "Show details"}
-                </button>
-              )}
-              {isOpen && (
-                <div className="text-xs rounded-lg px-3 py-2 ml-9 mb-2" style={{ backgroundColor: "var(--bg-accent-light）", color: "var(--text-secondary)" }}>
-                  {detailsLoading[key] ? "Loading..." : (detailsContent[key] || "Loading...")}
-                </div>
-              )}
+  // Parse cheatsheet_tips
+  function renderTips(tips) {
+    if (!tips) return null;
+    let parsed = tips;
+    if (typeof tips === "string") {
+      try { parsed = JSON.parse(tips); } catch { return null; }
+    }
+    // Filter out TODO items for display
+    const visible = parsed.filter(t => !t.tip.startsWith("TODO"));
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {visible.map((item, i) => (
+          <div key={i} style={{
+            display: "flex", gap: "10px", alignItems: "flex-start",
+            padding: "8px 0",
+            borderBottom: i < visible.length - 1 ? "1px solid var(--tip-border, #F59E0B)22" : "none"
+          }}>
+            <p style={{ fontSize: "13px", color: "var(--text-primary)", margin: 0, lineHeight: 1.6 }}>
+              {item.tip}
+            </p>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  // Parse fees
+  function renderFees(fees) {
+    if (!fees) return null;
+    if (typeof fees === "string") {
+      return <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.6, margin: 0 }}>{fees}</p>;
+    }
+    let parsed = fees;
+    if (Array.isArray(fees)) {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          {parsed.map((f, i) => (
+            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: i < parsed.length - 1 ? "1px solid var(--border-light)" : "none" }}>
+              <span style={{ fontSize: "13px", color: "var(--text-primary)" }}>{f.item}</span>
+              <span style={{ fontSize: "13px", fontWeight: "600", color: "var(--accent-dark)" }}>{f.amount}</span>
             </div>
-          );
-        }
-        // Regular text
-        return <p key={i} className="text-sm py-0.5" style={{ color: "var(--text-primary)" }}>{line}</p>;
-      });
+          ))}
+        </div>
+      );
+    }
+    return null;
+  }
+
+  // Parse sources
+  function renderSources(sources) {
+    if (!sources) return null;
+    let parsed = sources;
+    if (typeof sources === "string") {
+      try { parsed = JSON.parse(sources); } catch { return null; }
+    }
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        {parsed.map((src, i) => (
+          <a key={i} href={src.url} target="_blank" rel="noopener noreferrer"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: "10px 14px",
+              backgroundColor: "var(--bg-accent-light)",
+              borderRadius: "10px",
+              textDecoration: "none",
+              gap: "8px"
+            }}>
+            <span style={{ fontSize: "13px", color: "var(--accent-dark)", fontWeight: "500", lineHeight: 1.4 }}>
+              {src.title}
+            </span>
+            <span style={{ fontSize: "16px", flexShrink: 0 }}>→</span>
+          </a>
+        ))}
+      </div>
+    );
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div style={{ minHeight: "100vh", backgroundColor: "var(--bg-page)", fontFamily: "system-ui, sans-serif" }}>
       <TopBar />
 
-      <main className="flex-1 px-4 py-5 flex flex-col pb-32">
-        {/* Header */}
-        <div className="flex items-start gap-3 mb-5">
-          <Mascot emotion="happy" size={40} />
-          <div className="rounded-xl px-4 py-2.5 text-sm leading-relaxed"
-            style={{ backgroundColor: "var(--bg-accent)", color: "var(--text-primary)" }}>
-            <p>Here is your personalized cheatsheet!</p>
-          </div>
+      <main style={{ maxWidth: "480px", margin: "0 auto", padding: "72px 16px 100px" }}>
+
+        {/* Page header */}
+        <div style={{ marginBottom: "20px" }}>
+          <h1 style={{ fontSize: "22px", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 4px 0" }}>
+            Your Cheatsheet
+          </h1>
+          <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: 0 }}>
+            Ontario Driver's Licence — personalized for your situation
+          </p>
         </div>
 
-        {/* Loading */}
         {loading && <LoadingStages />}
 
-        {/* Error */}
         {error && (
-          <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
-            {error}
+          <div style={{
+            padding: "16px", backgroundColor: "#fef2f2", border: "1px solid #fca5a5",
+            borderRadius: "12px", marginBottom: "16px"
+          }}>
+            <p style={{ fontSize: "13px", color: "#dc2626", margin: "0 0 8px 0" }}>{error}</p>
             <button onClick={() => navigate("/decision-tree")}
-              className="ml-2 underline font-medium hover:text-red-900">
-              Back to questions
+              style={{ fontSize: "13px", color: "#dc2626", fontWeight: "600", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
+              ← Back to questions
             </button>
           </div>
         )}
 
-        {/* Cheatsheet Content */}
-        {sections && (
-          <div className="space-y-4">
-
-            {/* Profile Summary */}
-            <div className="rounded-xl border-2 p-4 mb-1" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-accent-light)" }}>
-              <h3 className="text-sm font-bold mb-2" style={{ color: "var(--accent)" }}>Your Profile</h3>
-              <div className="space-y-1 text-sm" style={{ color: "var(--text-primary)" }}>
-                {session.P1Q1 && session.P1Q1 !== "age18plus" && (
-                  <p>Age: {session.P1Q1 === "age16to17" ? "16-17" : "Under 16"}</p>
-                )}
-                {session.P1Q2 && (
-                  <p>Status: {{
-                    "international_student": "International Student",
-                    "work_permit": "Work Permit Holder",
-                    "visitor": "Visitor",
-                    "permanent_resident": "Permanent Resident",
-                    "protected_person_refugee": "Protected Person / Refugee"
-                  }[session.P1Q2] || session.P1Q2}</p>
-                )}
-                {session["P1Q3.1"] && (
-                  <p>From: {new Intl.DisplayNames(['en'], { type: 'region' }).of(session["P1Q3.1"])}</p>
-                )}
-                {session.P1Q3 === "Yes" && (
-                  <p>Foreign license: Yes</p>
-                )}
+        {/* YOUR SITUATION */}
+        <Section title="Here's what I learned from you" accent="var(--accent)">
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px", marginBottom: "12px" }}>
+            {situationLines.map((line, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                <div style={{ width: "6px", height: "6px", borderRadius: "50%", backgroundColor: "var(--accent)", flexShrink: 0 }} />
+                <span style={{ fontSize: "14px", color: "var(--text-primary)", fontWeight: "500" }}>{line}</span>
               </div>
-            </div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
+            <span style={{ fontSize: "13px", color: "var(--text-secondary)" }}>Look right?</span>
+            <button onClick={() => navigate("/decision-tree")}
+              style={{ fontSize: "13px", color: "var(--accent-dark)", fontWeight: "600", background: "none", border: "none", cursor: "pointer", padding: 0, textDecoration: "underline" }}>
+              Something off? Start over
+            </button>
+          </div>
+        </Section>
 
-            {/* Documents */}
-            {sections.documents && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Document Checklist</h3>
-                {renderLines(sections.documents)}
-              </div>
+        {/* Render cheatsheet content once loaded */}
+        {!loading && !error && (
+          <>
+            {/* OVERVIEW */}
+            {data?.overview && (
+              <Section title="Your Journey at a Glance" accent="var(--accent)">
+                <p style={{ fontSize: "14px", color: "var(--text-primary)", lineHeight: 1.7, margin: 0, whiteSpace: "pre-line" }}>
+                  {data.overview}
+                </p>
+              </Section>
             )}
 
-            {/* Tips */}
-            {sections.tips && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--tip-border)", backgroundColor: "var(--bg-tip)" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--tip-text)" }}>Tips from Experience</h3>
-                {renderLines(sections.tips)}
-              </div>
+            {/* YOUR STEPS */}
+            {data?.steps && (
+              <Section title="Your Steps" accent="var(--accent)">
+                {renderSteps(data.steps)}
+                <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: "12px 0 0 0" }}>
+                  Full step-by-step instructions → Game Plan
+                </p>
+              </Section>
             )}
 
-            {/* Cost */}
-            {sections.cost && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Cost</h3>
-                {renderLines(sections.cost)}
-              </div>
+            {/* WHAT TO PREPARE NOW */}
+            {data?.what_to_prepare && (
+              <Section title="What to Prepare Now" accent="#059669">
+                {renderWhatToPrepare(data.what_to_prepare)}
+              </Section>
             )}
 
-            {/* Steps */}
-            {sections.steps && (
-              <div className="rounded-xl border-2 p-4" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-card)" }}>
-                <h3 className="text-sm font-bold mb-3" style={{ color: "var(--accent)" }}>Your Steps</h3>
-                {renderLines(sections.steps)}
-              </div>
+            {/* DOCUMENTS */}
+            {data?.documents && (
+              <Section title="Document Checklist" accent="var(--accent)">
+                {renderDocuments(data.documents)}
+              </Section>
             )}
 
-            {/* Actions */}
-            <div className="flex flex-col gap-2 mt-4">
+            {/* COST */}
+            {data?.fees && (
+              <Section title="Cost" accent="var(--accent)">
+                {renderFees(data.fees)}
+              </Section>
+            )}
+
+            {/* KEY DECISIONS */}
+            {data?.cheatsheet_tips && (
+              <Section title="Key Decisions" accent="var(--tip-border)">
+                {renderTips(data.cheatsheet_tips)}
+              </Section>
+            )}
+
+            {/* SOURCES */}
+            {data?.sources && (
+              <Section title="Sources" accent="var(--border-color)">
+                <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: "0 0 10px 0" }}>
+                  Official Ontario government sources. Read them yourself.
+                </p>
+                {renderSources(data.sources)}
+              </Section>
+            )}
+
+            {/* Fallback: raw text if no structured data */}
+            {data?.raw && (
+              <Section title="Your Cheatsheet" accent="var(--accent)">
+                <p style={{ fontSize: "13px", color: "var(--text-primary)", lineHeight: 1.7, whiteSpace: "pre-line", margin: 0 }}>
+                  {data.raw}
+                </p>
+              </Section>
+            )}
+
+            {/* ACTIONS */}
+            <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginTop: "8px" }}>
+              <button
+                onClick={() => navigate("/game-plan", { state: { session, cheatsheet: data } })}
+                style={{
+                  width: "100%", padding: "15px",
+                  backgroundColor: "var(--accent-dark)", color: "#fff",
+                  borderRadius: "14px", fontWeight: "700", fontSize: "15px",
+                  border: "none", cursor: "pointer", letterSpacing: "0.01em"
+                }}>
+                Continue to Game Plan →
+              </button>
+
               <button onClick={() => setShowSaveModal(true)}
-                className="w-full py-3 rounded-xl text-white text-sm font-medium"
-                style={{ backgroundColor: "var(--accent-dark)" }}>
+                style={{
+                  width: "100%", padding: "13px",
+                  backgroundColor: "transparent",
+                  border: "2px solid var(--accent)",
+                  color: "var(--accent-dark)",
+                  borderRadius: "14px", fontWeight: "600", fontSize: "14px",
+                  cursor: "pointer"
+                }}>
                 Save to My Repo
               </button>
-              <div className="flex gap-3">
+
+              <div style={{ display: "flex", gap: "10px" }}>
                 <button onClick={() => navigate("/decision-tree")}
-                  className="flex-1 py-2.5 rounded-xl text-sm font-medium border-2"
-                  style={{ borderColor: "var(--accent)", color: "#var(--accent)" }}>
+                  style={{
+                    flex: 1, padding: "11px",
+                    backgroundColor: "transparent",
+                    border: "1.5px solid var(--border-color)",
+                    color: "var(--text-secondary)",
+                    borderRadius: "12px", fontSize: "13px", cursor: "pointer"
+                  }}>
                   Start Over
                 </button>
                 <button onClick={() => navigate("/")}
-                  className="flex-1 py-2.5 rounded-xl text-white text-sm font-medium"
-                  style={{ backgroundColor: "#var(--accent)" }}>
+                  style={{
+                    flex: 1, padding: "11px",
+                    backgroundColor: "var(--bg-accent)",
+                    border: "none",
+                    color: "var(--accent-dark)",
+                    borderRadius: "12px", fontSize: "13px", fontWeight: "600", cursor: "pointer"
+                  }}>
                   Home
                 </button>
               </div>
             </div>
-          </div>
+          </>
         )}
       </main>
 
-      {showSaveModal && !localStorage.getItem('token') && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.5)",
-          zIndex: 999,
-          display: "flex",
-          alignItems: "flex-end",
-          padding: "24px"
-        }}>
-          <div style={{
-            background: "#fff",
-            borderRadius: "16px",
-            padding: "24px",
-            width: "100%",
-          }}>
-            <h2 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>
-              Save your Cheatsheet
-            </h2>
-            <p style={{ fontSize: "13px", color: "#6B7280", marginBottom: "20px" }}>
-              Save your Cheatsheet and access it anytime from your Repo. Takes 30 seconds.
+      <BottomBar />
+
+      {/* Save Modal — not logged in */}
+      {showSaveModal && !localStorage.getItem("token") && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 999, display: "flex", alignItems: "flex-end", padding: "24px" }}>
+          <div style={{ background: "var(--bg-card)", borderRadius: "20px", padding: "28px", width: "100%" }}>
+            <h2 style={{ fontSize: "17px", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 8px 0" }}>Save your Cheatsheet</h2>
+            <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: "0 0 20px 0", lineHeight: 1.5 }}>
+              Create a free account to save this and access it anytime from your Repo.
             </p>
-            <button
-              onClick={() => navigate('/auth')}
-              style={{
-                width: "100%",
-                padding: "12px",
-                background: "var(--accent-dark)",
-                color: "#fff",
-                borderRadius: "12px",
-                fontWeight: "600",
-                fontSize: "14px",
-                marginBottom: "8px"
-              }}>
+            <button onClick={() => navigate("/auth")}
+              style={{ width: "100%", padding: "14px", background: "var(--accent-dark)", color: "#fff", borderRadius: "12px", fontWeight: "700", fontSize: "14px", border: "none", cursor: "pointer", marginBottom: "8px" }}>
               Sign up / Log in →
             </button>
-            <button
-              onClick={() => setShowSaveModal(false)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                background: "transparent",
-                color: "var(--text-muted)",
-                fontSize: "13px"
-              }}>
+            <button onClick={() => setShowSaveModal(false)}
+              style={{ width: "100%", padding: "12px", background: "transparent", color: "var(--text-muted)", fontSize: "13px", border: "none", cursor: "pointer" }}>
               No thanks, I'll screenshot
             </button>
           </div>
         </div>
       )}
 
-      {showSaveModal && localStorage.getItem('token') && (
-        <div style={{
-          position: "fixed",
-          top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.5)",
-          zIndex: 999,
-          display: "flex",
-          alignItems: "flex-end",
-          padding: "24px"
-        }}>
-          <div style={{
-            background: "#fff",
-            borderRadius: "16px",
-            padding: "24px",
-            width: "100%",
-          }}>
-            <h2 style={{ fontSize: "16px", fontWeight: "700", marginBottom: "8px" }}>
-              Save your Cheatsheet
-            </h2>
-            <p style={{ fontSize: "13px", color: "var(--text-muted)", marginBottom: "20px" }}>
-              Cheatsheet will be saved to your ClearPath account. Access it anytime.
+      {/* Save Modal — logged in */}
+      {showSaveModal && localStorage.getItem("token") && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 999, display: "flex", alignItems: "flex-end", padding: "24px" }}>
+          <div style={{ background: "var(--bg-card)", borderRadius: "20px", padding: "28px", width: "100%" }}>
+            <h2 style={{ fontSize: "17px", fontWeight: "800", color: "var(--text-primary)", margin: "0 0 8px 0" }}>Save your Cheatsheet</h2>
+            <p style={{ fontSize: "13px", color: "var(--text-secondary)", margin: "0 0 20px 0", lineHeight: 1.5 }}>
+              This cheatsheet will be saved to your Repo. Access it anytime.
             </p>
-            <button
-              onClick={handleSave}
-              style={{
-                width: "100%",
-                padding: "12px",
-                background: "var(--accent-dark)",
-                color: "#fff",
-                borderRadius: "12px",
-                fontWeight: "600",
-                fontSize: "14px",
-                marginBottom: "8px"
-              }}>
-              Save it →
+            <button onClick={handleSave} disabled={saveLoading}
+              style={{ width: "100%", padding: "14px", background: saveLoading ? "var(--border-color)" : "var(--accent-dark)", color: "#fff", borderRadius: "12px", fontWeight: "700", fontSize: "14px", border: "none", cursor: saveLoading ? "not-allowed" : "pointer", marginBottom: "8px" }}>
+              {saveLoading ? "Saving..." : "Save it →"}
             </button>
-            <button
-              onClick={() => setShowSaveModal(false)}
-              style={{
-                width: "100%",
-                padding: "12px",
-                background: "transparent",
-                color: "var(--text-muted)",
-                fontSize: "13px"
-              }}>
-              No thanks, I'll screenshot
+            <button onClick={() => setShowSaveModal(false)}
+              style={{ width: "100%", padding: "12px", background: "transparent", color: "var(--text-muted)", fontSize: "13px", border: "none", cursor: "pointer" }}>
+              Cancel
             </button>
           </div>
         </div>
       )}
-      <BottomBar />
     </div>
   );
 }
