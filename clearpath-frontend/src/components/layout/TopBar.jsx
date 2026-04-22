@@ -25,7 +25,7 @@ export default function TopBar() {
   return (
     <>
       {/* TopBar */}
-      <div className="fixed top-0 left-0 right-0 max-w-sm mx-auto z-50 flex items-center justify-between px-5 py-4"
+      <div className="fixed top-0 left-0 right-0 max-w-[480px] mx-auto z-50 flex items-center justify-between px-5 py-4"
   style={{ backgroundColor: "var(--bg-card)", borderBottom: "1px solid var(--border-light)" }}>
         {localStorage.getItem('token') ? (
           <div style={{ position: "relative" }}>

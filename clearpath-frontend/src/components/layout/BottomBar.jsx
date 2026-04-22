@@ -39,7 +39,7 @@ export default function BottomBar() {
   return (
     <>
       {/* Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center max-w-sm mx-auto px-10"
+      <div className="fixed bottom-0 left-0 right-0 flex justify-around items-center max-w-[480px] mx-auto px-10"
         style={{ height: "60px", backgroundColor: "var(--bg-card)", borderTop: "1px solid var(--border-light)" }}>
 
         {/* Quiz */}
