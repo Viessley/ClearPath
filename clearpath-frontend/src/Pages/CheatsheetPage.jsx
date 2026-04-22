@@ -159,18 +159,12 @@ export default function CheatsheetPage() {
 
       if (json.error) {
         setError(json.error);
-      } else if (!json.cheatsheet || json.cheatsheet.trim() === "" ||
-        json.cheatsheet.includes("quota") || json.cheatsheet.includes("429")) {
-        setError("Our AI is taking a break — the free quota has been used up. Please try again in a few hours.");
+      } else if (json.structured) {
+        setData(json.structured);
+      } else if (!json.cheatsheet || json.cheatsheet.includes("quota") || json.cheatsheet.includes("429")) {
+        setError("Our AI is taking a break — the free API quota has been used up. Please try again in a few hours. (Yes, the developer is broke.)");
       } else {
-        // Try to parse as structured JSON from knowledge_base
-        // Backend should return structured data — fallback to raw text
-        if (json.structured) {
-          setData(json.structured);
-        } else {
-          // fallback: wrap raw cheatsheet text so page still renders
-          setData({ raw: json.cheatsheet });
-        }
+        setData({ raw: json.cheatsheet });
       }
     } catch (err) {
       setError("Could not load your cheatsheet. Please check your connection.");
