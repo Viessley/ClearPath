@@ -9,7 +9,7 @@ export default function QuizHubPage() {
   const [showComingSoon, setShowComingSoon] = useState(false)
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <main className="flex-1 px-4 pt-20 pb-32 flex flex-col gap-4">

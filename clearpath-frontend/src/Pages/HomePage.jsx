@@ -26,7 +26,7 @@ export default function HomePage() {
   const toggleItem = (id) => setSelected(prev => ({ ...prev, [id]: !prev[id] }))
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <div className="flex-1 px-4 pt-4 pb-32">
