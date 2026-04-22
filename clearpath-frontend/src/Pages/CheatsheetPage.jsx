@@ -299,6 +299,18 @@ export default function CheatsheetPage() {
             <p style={{ fontSize: "12px", color: "var(--text-secondary)", margin: 0, lineHeight: 1.5 }}>
               {item.why}
             </p>
+            {item.action.includes("MTO Driver") && (
+              <div style={{ marginTop: "6px" }}>
+                <a href="https://www.ontario.ca/document/official-mto-drivers-handbook"
+                  target="_blank" rel="noopener noreferrer"
+                  style={{ fontSize: "12px", color: "var(--accent-dark)", fontWeight: "600", textDecoration: "none" }}>
+                  Open Handbook →
+                </a>
+                <p style={{ fontSize: "11px", color: "var(--text-muted)", margin: "2px 0 0 0" }}>
+                  Tip: Print → Save as PDF to save offline
+                </p>
+              </div>
+            )}
           </div>
         ))}
       </div>
