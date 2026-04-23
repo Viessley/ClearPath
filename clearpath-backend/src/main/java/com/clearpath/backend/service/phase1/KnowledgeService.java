@@ -145,6 +145,20 @@ public class KnowledgeService {
         return null;
     }
 
+    public Integer resolveKbId(Map<String, String> session) {
+        String subtopic = mapSubtopic(session);
+        if (subtopic == null) return null;
+        return switch (subtopic) {
+            case "no_foreign_licence"              -> 1;
+            case "exchange_agreement_licence"      -> 2;
+            case "non_agreement_record_under_1_year" -> 3;
+            case "non_agreement_record_1_to_2_years" -> 4;
+            case "non_agreement_record_over_2_years" -> 5;
+            case "non_agreement_no_record"         -> 6;
+            default -> null;
+        };
+    }
+
     private String formatSteps(String stepsJson) {
         if (stepsJson == null) return "";
         try {
