@@ -8,6 +8,7 @@ import AuthCallbackPage from './Pages/AuthCallbackPage'
 import KitViewPage from './Pages/KitViewPage'
 import QuizPage from './Pages/QuizPage'
 import QuizHubPage from './Pages/QuizHubPage'
+import GamePlanPage from './Pages/GamePlanPage'
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
         <Route path="/kit/:id" element={<KitViewPage />} />
         <Route path="/quiz" element={<QuizPage />} />
         <Route path="/quiz-hub" element={<QuizHubPage />} />
+        <Route path="/game-plan" element={<GamePlanPage />} />
       </Routes>
     </BrowserRouter>
   )
