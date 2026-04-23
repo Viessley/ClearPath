@@ -54,7 +54,7 @@ export default function GamePlanPage() {
   }
 
   if (loading) return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
       <div className="flex-1 flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
