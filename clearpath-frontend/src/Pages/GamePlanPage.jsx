@@ -68,7 +68,7 @@ export default function GamePlanPage() {
   );
 
   if (error) return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
       <div className="flex-1 flex items-center justify-center px-6">
         <p className="text-sm text-center" style={{ color: "var(--text-muted)" }}>{error}</p>
@@ -78,7 +78,7 @@ export default function GamePlanPage() {
   );
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-page)" }}>
       <TopBar />
 
       <main className="flex-1 px-4 pt-20 pb-32 flex flex-col gap-4">
