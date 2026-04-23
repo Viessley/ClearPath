@@ -575,12 +575,6 @@ export default function CheatsheetPage() {
                 Continue to Game Plan →
               </button>
 
-              <button onClick={() => navigate("/game-plan", { state: { session } })}
-                className="w-full py-3 rounded-xl text-white text-sm font-medium"
-                style={{ backgroundColor: "#0f766e" }}>
-                Continue to Game Plan →
-              </button>
-
               <button onClick={() => setShowSaveModal(true)}
                 style={{
                   width: "100%", padding: "13px",
