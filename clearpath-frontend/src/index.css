@@ -35,3 +35,7 @@ html.dark {
   --bg-accent-blue: #1a2a3a;
   --bg-accent-light: #1a2e2c;
 }
+
+html.dark body {
+  background-color: #1a1a1a;
+}
