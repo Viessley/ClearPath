@@ -51,33 +51,42 @@ public class AIService {
             String sessionJson = mapper.writeValueAsString(session);
 
             String stuckContext = (stuckAt != null && !stuckAt.isBlank())
-                    ? "The user got stuck at question ID: " + stuckAt + ". They selected 'I'm not sure' and need help understanding their situation before proceeding."
-                    : "The user came from the decision tree and is asking a follow-up question.";
-
-            String knowledgeContext = knowledgeService.retrieveForAI(session);
+                    ? "User is stuck at question: " + stuckAt
+                    : "User is asking a follow-up question.";
 
             return """
-        You are ClearPath, a guide helping newcomers navigate Ontario's driver's license process.
+                You are ClearPath, Ontario driver's license guide.
 
-        OFFICIAL KNOWLEDGE BASE (use this as your PRIMARY source. Base your answer on this content only):
-        %s
+                Session: %s
+                Context: %s
+                User: %s
 
-        User's decision tree session so far:
-        %s
+                Options:
+                P1Q1:age18plus|age16to17|underAge16|notSure
+                P1Q2:international_student|work_permit|visitor|permanent_resident|protected_person_refugee|canadian_citizen
+                P1Q2.1IS:validMoreThan6Months|validLessThan6Months|expired
+                P1Q2.1WP:open_work_permit|employer_specific
+                P1Q2.2WP:validMoreThan6Months|validLessThan6Months|expired
+                P1Q2.1VIS:short_term_tourist|long_stay
+                P1Q2.1PR:pr_card|copr
+                P1Q2.2PRCard:valid|expired
+                P1Q3:Yes|No
+                P1Q3.1:country_code
+                P1Q3.2NotAgreement:Less1Year|1To2|MoreThen2
+                P1Q3.3NotAgreement:Yes|No
 
-        Context: %s
+                Rules:
+                - Max 3 short sentences per reply.
+                - Simple words. One idea per sentence.
+                - Ask one question at a time.
+                - ASCII only. No greetings.
 
-        User's message:
-        %s
+                If sure of answer: one sentence why, then append:
+                [DECISION: {"questionId":"...","answer":"..."}]
 
-        IMPORTANT RULES:
-        - Answer ONLY based on the Official Knowledge Base above. Do not invent facts.
-        - If the user expresses uncertainty — ask 1-2 clarifying questions first.
-        - Only give steps/documents/fees AFTER you understand their situation clearly.
-        - Plain text only. No emojis, no arrows, no special symbols.
-        - Maximum 200 words.
-        - No greetings, no encouragement, no filler.
-        """.formatted(knowledgeContext, sessionJson, stuckContext, userMessage);
+                If out of scope: append [SCOPE_OUT]
+                If still asking: no tag.
+                """.formatted(sessionJson, stuckContext, userMessage);
 
         } catch (Exception e) {
             return userMessage;
