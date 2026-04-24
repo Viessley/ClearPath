@@ -85,26 +85,47 @@ export default function AIChatPage() {
     setLoading(true);
 
     try {
-      // Include stuckAt context so AI knows where user got confused
-      const contextMessage = stuckAt
-        ? `[User was answering question ${stuckAt} and selected "not sure". Their session so far: ${JSON.stringify(session)}] ${userMessage}`
-        : userMessage;
-
       const res = await fetch(`${API_BASE}/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session, userMessage: contextMessage, stuckAt }),
+        body: JSON.stringify({ session, userMessage, stuckAt }),
       });
       const data = await res.json();
 
-      setMessages(prev => [...prev, {
-        role: "ai",
-        text: data.message || "Sorry, I could not process that. Please try again."
-      }]);
+      const rawText = data.message || "This is not your fault. It's all on the developer. You can send a strongly-worded email to clearpathwesley@gmail.com — once he sees it, he will fix it ASAP. So sorry.";
+
+      const decisionMatch = rawText.match(/\[DECISION:\s*({.*?})\]/s);
+      const scopeOut = rawText.includes("[SCOPE_OUT]");
+
+      const displayText = rawText
+        .replace(/\[DECISION:.*?\]/s, "")
+        .replace("[SCOPE_OUT]", "")
+        .trim();
+
+      setMessages(prev => [...prev, { role: "ai", text: displayText }]);
+
+      if (decisionMatch) {
+        try {
+          const decision = JSON.parse(decisionMatch[1]);
+          const newSession = { ...session, [decision.questionId]: decision.answer };
+          setTimeout(() => {
+            navigate("/decision-tree", { state: { session: newSession, resumeFrom: decision.questionId } });
+          }, 2000);
+        } catch (e) {
+          console.error("Failed to parse DECISION signal", e);
+        }
+      }
+
+      if (scopeOut) {
+        setTimeout(() => {
+          navigate("/cheatsheet", { state: { session } });
+        }, 2000);
+      }
+
     } catch (err) {
       setMessages(prev => [...prev, {
         role: "ai",
-        text: "Connection error. Please make sure the backend is running."
+        text: "This is not your fault. It's all on the developer. You can send a strongly-worded email to clearpathwesley@gmail.com — once he sees it, he will fix it ASAP. So sorry."
       }]);
     } finally {
       setLoading(false);
