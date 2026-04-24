@@ -57,7 +57,7 @@ export default function DecisionTreePage() {
       setDone(false);
       setAiSupport(false);
     } catch (err) {
-      setError("Could not connect to ClearPath server. Make sure the backend is running on port 8080.");
+      setError("Our server decided to take an unauthorized vacation. The developer has been notified and is not having a good time right now. Check back in a few minutes, or email clearpathwesley@gmail.com to make his day worse.");
     } finally {
       setLoading(false);
     }
@@ -106,7 +106,7 @@ export default function DecisionTreePage() {
         setFeedback((data.feedback || "") + "\n\n(Section: " + (data.sectionId || "unknown") + " — coming soon)");
       }
     } catch (err) {
-      setError("Network error. Please try again.");
+      setError("Lost connection mid-way. Not your fault. Refresh and try again — your progress might still be there. If not, I really don't know what to tell you besides find a better connection. I'll pray for you.");
     } finally {
       setLoading(false);
     }

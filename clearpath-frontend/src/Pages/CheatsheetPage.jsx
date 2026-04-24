@@ -162,7 +162,7 @@ export default function CheatsheetPage() {
 
   useEffect(() => {
     if (Object.keys(session).length === 0) {
-      setError("No session data found. Please complete the decision tree first.");
+      setError("We lost your answers. This usually happens when you refresh the page — we're working on a fix. For now, go back and answer the questions again. Takes 2 minutes.");
       setLoading(false);
       return;
     }
@@ -188,7 +188,7 @@ export default function CheatsheetPage() {
         setData({ raw: json.cheatsheet });
       }
     } catch (err) {
-      setError("Could not load your cheatsheet. Please check your connection.");
+      setError("Our server decided to take an unauthorized vacation. The developer has been notified and is not having a good time right now. Check back in a few minutes, or email clearpathwesley@gmail.com to make his day worse.");
     } finally {
       setLoading(false);
     }
