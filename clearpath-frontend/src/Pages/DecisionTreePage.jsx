@@ -10,7 +10,7 @@ export default function DecisionTreePage() {
   const navigate = useNavigate();
 
   const location = useLocation();
-  const resumeSession = location.state?.session || null；
+  const resumeSession = location.state?.session || null;
   const resumeFrom = location.state?.resumeFrom || null;
 
   // Current question state
