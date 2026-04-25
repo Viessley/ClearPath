@@ -1,20 +1,16 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation} from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
-import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
 
 export default function DecisionTreePage() {
   const navigate = useNavigate();
 
-  const navigate = useNavigate();
   const location = useLocation();
-  const resumeSession = location.state?.session || null;
+  const resumeSession = location.state?.session || null；
   const resumeFrom = location.state?.resumeFrom || null;
 
   // Current question state
