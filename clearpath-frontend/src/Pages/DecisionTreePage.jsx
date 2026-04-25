@@ -3,11 +3,19 @@ import { useNavigate } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
+import { useState, useEffect, useRef } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 
 const API_BASE = "https://clearpath-backend-sc9k.onrender.com/api/drivers-license";
 
 export default function DecisionTreePage() {
   const navigate = useNavigate();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const resumeSession = location.state?.session || null;
+  const resumeFrom = location.state?.resumeFrom || null;
 
   // Current question state
   const [question, setQuestion] = useState(null);
@@ -35,7 +43,14 @@ export default function DecisionTreePage() {
   const [isVisible, setIsVisible] = useState(false);
   const cardRef = useRef(null);
 
-  useEffect(() => { fetchStart(); }, []);
+  useEffect(() => {
+    if (resumeFrom && resumeSession) {
+      setSession(resumeSession);
+      resumeDecisionTree(resumeFrom, resumeSession[resumeFrom], resumeSession);
+    } else {
+      fetchStart();
+    }
+  }, []);
 
   useEffect(() => {
     setIsVisible(false);
@@ -58,6 +73,40 @@ export default function DecisionTreePage() {
       setAiSupport(false);
     } catch (err) {
       setError("Our server decided to take an unauthorized vacation. The developer has been notified and is not having a good time right now. Check back in a few minutes, or email clearpathwesley@gmail.com to make his day worse.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function resumeDecisionTree(qId, value, sess) {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(
+        `${API_BASE}/answer?questionId=${encodeURIComponent(qId)}&value=${encodeURIComponent(value)}`
+      );
+      const data = await res.json();
+      if (data.error) { setError(data.error); setLoading(false); return; }
+
+      const updatedSession = { ...sess, [qId]: value };
+      setSession(updatedSession);
+      setFeedback(data.feedback || null);
+
+      const type = data.type;
+      if (type === "NEXT_QUESTION" || type === "AI_SUPPORT") {
+        setQuestion(data.question || null);
+        setQuestionId(data.questionId || null);
+        setOptions(data.options || []);
+        setSelectedValue(null);
+        setDone(data.done || false);
+        setAiSupport(data.aiSupport || false);
+        setAiInputType(data.inputType || null);
+      } else if (type === "ANSWER") {
+        setQuestion(null); setOptions([]); setSelectedValue(null);
+        setDone(true); setAiSupport(false);
+      }
+    } catch (err) {
+      setError("Lost connection mid-way. Not your fault. Refresh and try again — your progress might still be there. If not, I really don't know what to tell you besides find a better connection. I'll pray for you.");
     } finally {
       setLoading(false);
     }
@@ -268,7 +317,7 @@ export default function DecisionTreePage() {
         {/* Done */}
         {!loading && done && (
           <div className={`transition-all duration-300 ease-out ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-3"}`}>
-            <div className="rounded-xl border-2 px-5 py-5 text-center" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-accent)"    }}>
+            <div className="rounded-xl border-2 px-5 py-5 text-center" style={{ borderColor: "var(--border-color)", backgroundColor: "var(--bg-accent)" }}>
               <div className="text-3xl mb-3">✅</div>
               <h2 className="text-base font-semibold mb-2" style={{ color: "var(--text-primary)" }}>Assessment Complete</h2>
               {feedback && <p className="text-sm text-gray-600 mb-4 leading-relaxed">{feedback}</p>}
