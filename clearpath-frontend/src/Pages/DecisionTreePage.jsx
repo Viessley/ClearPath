@@ -88,8 +88,6 @@ export default function DecisionTreePage() {
       setSession(updatedSession);
       setFeedback(data.feedback || null);
 
-
-
       const type = data.type;
       if (type === "AI_SUPPORT") {
         navigate("/ai-chat", { state: { session: updatedSession, stuckAt: questionId, feedback: data.feedback } });
@@ -139,7 +137,10 @@ export default function DecisionTreePage() {
       const type = data.type;
       setFeedback(data.feedback || null);
 
-      if (type === "NEXT_QUESTION" || type === "AI_SUPPORT") {
+      if (type === "AI_SUPPORT") {
+        navigate("/ai-chat", { state: { session: updatedSession, stuckAt: questionId, feedback: data.feedback } });
+        return;
+      } else if (type === "NEXT_QUESTION") {
         setQuestion(data.question || null);
         setQuestionId(data.questionId || null);
         setOptions(data.options || []);
@@ -147,7 +148,8 @@ export default function DecisionTreePage() {
         setDone(data.done || false);
         setAiSupport(data.aiSupport || false);
         setAiInputType(data.inputType || null);
-      } else if (type === "ANSWER") {
+      }
+      else if (type === "ANSWER") {
         setQuestion(null); setOptions([]); setSelectedValue(null);
         setDone(true); setAiSupport(false);
       } else if (type === "NEXT_SECTION") {
