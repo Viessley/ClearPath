@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate, useLocation} from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import TopBar from "../components/layout/TopBar";
 import BottomBar from '../components/layout/BottomBar'
 import Mascot from "../components/shared/Mascot";
@@ -88,8 +88,13 @@ export default function DecisionTreePage() {
       setSession(updatedSession);
       setFeedback(data.feedback || null);
 
+
+
       const type = data.type;
-      if (type === "NEXT_QUESTION" || type === "AI_SUPPORT") {
+      if (type === "AI_SUPPORT") {
+        navigate("/ai-chat", { state: { session: updatedSession, stuckAt: questionId, feedback: data.feedback } });
+        return;
+      } else if (type === "NEXT_QUESTION") {
         setQuestion(data.question || null);
         setQuestionId(data.questionId || null);
         setOptions(data.options || []);
@@ -169,8 +174,9 @@ export default function DecisionTreePage() {
   }
 
   function goToAIChat() {
-    navigate("/ai-chat", { state: { session, questionId, feedback } });
+    navigate("/ai-chat", { state: { session, stuckAt: questionId, feedback } });
   }
+
   function goToCheatsheet() { navigate("/cheatsheet", { state: { session } }); }
 
   const stepCount = history.length + 1;
