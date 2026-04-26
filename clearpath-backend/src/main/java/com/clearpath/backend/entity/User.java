@@ -11,18 +11,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
+
+    @Column(name = "nickname")
+    private String nickname;
+
+    @Column(name = "gender")
+    private String gender;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-
-    @Column(nullable = false)
-    private String passwordHash;
-
-    private String nickname;
-
-    private String gender;
 
     @Column(name = "last_login")
     private LocalDateTime lastLogin;
