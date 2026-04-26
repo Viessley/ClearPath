@@ -150,11 +150,11 @@ export default function AIChatPage() {
   }
 
   return (
-    <div className="max-w-sm mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-accent-light)" }}>
+    <div className="max-w-[480px] mx-auto min-h-screen flex flex-col" style={{ background: "var(--bg-accent-light)" }}>
       <TopBar />
 
       {/* Chat messages */}
-      <div className="flex-1 px-4 py-4 overflow-y-auto pb-32">
+      <div className="flex-1 px-4 py-4 pt-20 overflow-y-auto pb-32">
         {messages.map((msg, i) => (
           <div key={i} className={`flex items-start gap-2.5 mb-4 ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
             {msg.role === "ai" && <Mascot emotion="neutral" size={32} />}
