@@ -24,6 +24,7 @@ public class User {
 
     private String gender;
 
+    @Column(name = "last_login")
     private LocalDateTime lastLogin;
 
     // Getters and Setters
