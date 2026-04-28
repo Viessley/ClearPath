@@ -12,9 +12,7 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 import java.util.Map;
 
-import com.clearpath.backend.service.phase1.KnowledgeService;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.List;
 
 @Service
 public class AIService {
@@ -28,9 +26,9 @@ public class AIService {
     private static final String GEMINI_URL =
             "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
 
-    public String chat(Map<String, String> session, String userMessage, String stuckAt) {
+    public String chat(Map<String, String> session, String userMessage, String stuckAt, String systemHint) {
         try {
-            String servicePrompt = buildServicePrompt(session, userMessage, stuckAt);
+            String servicePrompt = buildServicePrompt(session, userMessage, stuckAt, systemHint);
             String serviceResponse = extractText(callGemini(buildGeminiRequest(servicePrompt, false)));
             System.out.println("Agent 1: Service response generated.");
 
@@ -45,7 +43,8 @@ public class AIService {
         }
     }
 
-    private String buildServicePrompt(Map<String, String> session, String userMessage, String stuckAt) {
+    private String buildServicePrompt(Map<String, String> session, String userMessage, String stuckAt, String systemHint) {
+
         try {
             ObjectMapper mapper = new ObjectMapper();
             String sessionJson = mapper.writeValueAsString(session);
@@ -53,6 +52,10 @@ public class AIService {
             String stuckContext = (stuckAt != null && !stuckAt.isBlank())
                     ? "User is stuck at question: " + stuckAt
                     : "User is asking a follow-up question.";
+
+            String hintContext = (systemHint != null && !systemHint.isBlank())
+                    ? "\nSCOPE RULES:\n" + systemHint
+                    : "";
 
             return """
                 You are ClearPath, Ontario driver's license guide.
@@ -86,7 +89,7 @@ public class AIService {
 
                 If out of scope: append [SCOPE_OUT]
                 If still asking: no tag.
-                """.formatted(sessionJson, stuckContext, userMessage);
+                """.formatted(hintContext, sessionJson, stuckContext, userMessage);
 
         } catch (Exception e) {
             return userMessage;
