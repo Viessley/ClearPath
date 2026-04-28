@@ -105,15 +105,42 @@ export default function TopBar() {
             maxHeight: "80vh",
             overflowY: "auto"
           }}>
-            <div>
-              <h2>ClearPath Updates</h2>
-              <p>Welcome! This page will track our roadmap and ideas. A feedback email is coming soon, which we will review daily. Special thanks to Stephen Gagne (Algonquin College) for 8 months of support in turning ClearPath into reality.</p>
-              <h3>Update</h3>
-              <p>Update: Google Sign-In is now live. No more passwords — just tap "Continue with Google" and you're in.
-                Save your Cheatsheet to your personal account and access it anytime from your Repo.
-                As a thank-you to our early adopters: the first 20 users to register get lifetime free access to all future premium features. No catch.</p>
+            <div style={{ fontSize: "14px", lineHeight: "1.7", color: "var(--text-primary)" }}>
+              <h2 style={{ fontSize: "17px", fontWeight: "700", marginBottom: "8px" }}>ClearPath Updates</h2>
+              <p style={{ marginBottom: "12px", color: "var(--text-muted)", fontSize: "13px" }}>Last updated: April 28, 2026</p>
+              <p style={{ marginBottom: "16px" }}>Welcome! This page will track our roadmap and ideas. A feedback email is coming soon, which we will review daily. Special thanks to Stephen Gagne (Algonquin College) for 8 months of support in turning ClearPath into reality.</p>
 
-              <p>— Wesley</p>
+              <h3 style={{ fontWeight: "700", marginBottom: "6px" }}>✅ What works right now</h3>
+              <p style={{ marginBottom: "4px" }}><strong>Decision Tree</strong> — Live. 20+ branches covering age, immigration status, and foreign license.</p>
+              <p style={{ marginBottom: "4px" }}><strong>AI Chat</strong> — Live. Powered by Claude Haiku 4.5. Faster than before.</p>
+              <p style={{ marginBottom: "4px" }}><strong>Google Sign-In</strong> — Live. No password needed.</p>
+              <p style={{ marginBottom: "4px" }}><strong>Quiz Hub</strong> — Live. G1 practice questions.</p>
+              <p style={{ marginBottom: "16px" }}><strong>Repo (Kit saving)</strong> — Live. Save and access your Cheatsheet anytime.</p>
+
+              <h3 style={{ fontWeight: "700", marginBottom: "6px" }}>🚧 Not ready yet</h3>
+              <p style={{ marginBottom: "4px" }}><strong>Cheatsheet</strong> — Partially working. Content is rough, layout needs work.</p>
+              <p style={{ marginBottom: "4px" }}><strong>Game Plan</strong> — In development. Step tracking not connected yet.</p>
+              <p style={{ marginBottom: "4px" }}><strong>Camera / Voice</strong> — UI only. Not functional yet.</p>
+              <p style={{ marginBottom: "16px" }}><strong>Coverage</strong> — Ontario driver's license only for now. More coming.</p>
+
+              <h3 style={{ fontWeight: "700", marginBottom: "6px" }}>⚠️ Known issues</h3>
+              <p style={{ marginBottom: "4px" }}>— AI occasionally goes off-topic on Study Permit questions. Being fixed.</p>
+              <p style={{ marginBottom: "4px" }}>— Desktop layout works but isn't polished yet.</p>
+              <p style={{ marginBottom: "16px" }}>— First load can be slow (free server sleeps when idle). Give it 10–15 seconds.</p>
+
+              <h3 style={{ fontWeight: "700", marginBottom: "6px" }}>🔜 Coming soon</h3>
+              <p style={{ marginBottom: "4px" }}>— Better Cheatsheet with steps, documents, fees, and tips</p>
+              <p style={{ marginBottom: "4px" }}>— PDF export for your Survival Kit</p>
+              <p style={{ marginBottom: "4px" }}>— More coverage (Study Permit, G2/G, and more)</p>
+              <p style={{ marginBottom: "16px" }}>— French language support</p>
+
+              <h3 style={{ fontWeight: "700", marginBottom: "6px" }}>🎁 Early adopter offer</h3>
+              <p style={{ marginBottom: "16px" }}>The first 20 users to register get lifetime free access to all future premium features. No catch. We mean it.</p>
+
+              <p style={{ marginBottom: "4px" }}>If you're having a bad day, email us and tell us ClearPath is stupid. It might help.</p>
+              <p style={{ marginBottom: "0", fontWeight: "600" }}>clearpathwesley@gmail.com</p>
+
+              <p style={{ marginTop: "16px", color: "var(--text-muted)", fontSize: "13px" }}>— Wesley</p>
             </div>
             <button onClick={() => {
               setShowAnnouncement(false)
