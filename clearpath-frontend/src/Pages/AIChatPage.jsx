@@ -71,6 +71,7 @@ export default function AIChatPage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [openerLoading, setOpenerLoading] = useState(true);
+  const [systemHint, setSystemHint] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -101,6 +102,7 @@ export default function AIChatPage() {
           if (data.chips) {
             try {
               const parsed = typeof data.chips === "string" ? JSON.parse(data.chips) : data.chips;
+              if (data.systemHint) setSystemHint(data.systemHint);
               setChips(Array.isArray(parsed) ? parsed : []);
             } catch { setChips([]); }
           }
@@ -150,7 +152,7 @@ export default function AIChatPage() {
       const res = await fetch(`${API_BASE}/drivers-license/ai/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ session, userMessage, stuckAt }),
+        body: JSON.stringify({ session, userMessage, stuckAt, systemHint }),
       });
       const data = await res.json();
 
