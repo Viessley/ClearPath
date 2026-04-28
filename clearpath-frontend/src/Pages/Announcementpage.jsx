@@ -5,21 +5,60 @@ import { useNavigate } from 'react-router-dom'
 // ✏️  WESLEY — EDIT HERE
 // ============================================================
 const ANNOUNCEMENT = {
-  lastUpdated: "April 5, 2026",
-  badge: "Beta",                         // e.g. "Beta" | "v0.2" | "Live"
+  lastUpdated: "April 28, 2026",
+  badge: "Beta",
   title: "ClearPath is in active development 🚧",
-  body: `Hey there — thanks for checking out ClearPath early.
+  body: `Welcome! This page will track our roadmap and ideas. A feedback email is coming soon, which we will review daily. Special thanks to Stephen Gagne (Algonquin College) for 8 months of support in turning ClearPath into reality.
 
-We're currently building out Phase 1: Ontario Driver's License guidance. 
-The Briefing (decision tree) is live. The Survival Kit is coming soon.
+─────────────────────────
+What works right now
+─────────────────────────
+Decision Tree (Briefing) — Live and working. Answer a few questions about your situation and ClearPath figures out your path. Covers age, immigration status, foreign license, and 20+ branches.
 
-Things may break. Flows may change. That's the beauty of beta.
+AI Chat — Live. If you hit a question you're not sure about, the AI steps in to help clarify and get you back on track. Now powered by Claude Haiku 4.5 — noticeably faster than before.
 
-If something doesn't work, or you have a suggestion — reach out. 
-Every message gets read.`,
+Google Sign-In — Live. No password needed. Tap "Continue with Google" and you're in.
+
+Quiz Hub — Live. G1 practice questions to help you prep for the knowledge test.
+
+Repo (Kit saving) — Live. Save your Cheatsheet to your account and access it anytime.
+
+─────────────────────────
+What doesn't work yet
+─────────────────────────
+Cheatsheet (Survival Kit) — Partially working. The AI generates your personalized action plan at the end of the decision tree, but the layout and content still need work. Consider it a rough draft.
+
+Game Plan — In development. Step-by-step tracking inside your saved Kit is not connected yet.
+
+Camera / Voice input — UI is there, functionality is not built yet.
+
+Coverage — Right now ClearPath only covers Ontario driver's license guidance. More services are coming.
+
+─────────────────────────
+Known issues
+─────────────────────────
+- AI responses occasionally go off-topic when the situation involves immigration questions (Study Permit, etc.). We're fixing the scope boundaries.
+- The app is optimized for mobile. Desktop layout is functional but not polished.
+- First load can be slow — the backend is on a free server that sleeps when idle. Give it 10–15 seconds on first visit.
+
+─────────────────────────
+What's coming
+─────────────────────────
+- Proper Cheatsheet rendering with structured steps, documents, fees, and tips
+- AI scope fixes — better handoff to the right resources when your situation is outside our lane
+- More decision tree coverage (Study Permit extension, G2/G, more)
+- PDF export for your Survival Kit
+- French language support
+
+─────────────────────────
+Early adopter offer
+─────────────────────────
+The first 20 users to register get lifetime free access to all future premium features. No catch. We mean it.
+
+— Wesley`,
   contact: {
-    label: "Contact the dev",
-    email: "hello@clearpath.placeholder",   // 🔁 Replace when ready
+    label: "If you're having a bad day, send us hate mail",
+    email: "clearpathwesley@gmail.com",
   },
 }
 // ============================================================
@@ -107,11 +146,10 @@ export default function AnnouncementPage() {
             </span>
           </button>
           <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-            Tap to copy email address
+            Tell us ClearPath is stupid. It might help. We read everything.
           </p>
         </div>
       </div>
     </div>
   )
 }
-
