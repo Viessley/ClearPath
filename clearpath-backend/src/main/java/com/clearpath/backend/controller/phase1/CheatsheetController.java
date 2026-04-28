@@ -37,6 +37,7 @@ public class CheatsheetController {
         if (kb.containsKey("error")) {
             String aiResult = aiService.chat(session,
                     "Based on my completed decision tree, generate my personalized cheatsheet for getting an Ontario driver's license. Include: steps to follow, documents to bring, requirements to check, where to go, and costs.",
+                    null,
                     null);
             Map<String, Object> response = new HashMap<>();
             response.put("cheatsheet", aiResult);
