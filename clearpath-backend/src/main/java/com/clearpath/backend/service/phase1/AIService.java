@@ -1,6 +1,8 @@
 package com.clearpath.backend.service.phase1;
 
 import com.clearpath.backend.dto.phase1.CheatsheetResponse;
+import com.clearpath.backend.entity.DtOption;
+import com.clearpath.backend.repository.DtOptionRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -10,41 +12,36 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Service
 public class AIService {
 
-    @Value("${gemini.api.key}")
+    @Value("${anthropic.api.key}")
     private String apiKey;
 
     @Autowired
     private KnowledgeService knowledgeService;
 
-    private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
+    @Autowired
+    private DtOptionRepository dtOptionRepository;
+
+    private static final String ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
 
     public String chat(Map<String, String> session, String userMessage, String stuckAt, String systemHint) {
         try {
-            String servicePrompt = buildServicePrompt(session, userMessage, stuckAt, systemHint);
-            String serviceResponse = extractText(callGemini(buildGeminiRequest(servicePrompt, false)));
-            System.out.println("Agent 1: Service response generated.");
-
-            String plainPrompt = buildPlainLanguagePrompt(serviceResponse);
-            String finalResponse = extractText(callGemini(buildGeminiRequest(plainPrompt, false)));
-            System.out.println("Agent 2: Plain language output ready.");
-
-            return finalResponse;
-
+            String prompt = buildServicePrompt(session, userMessage, stuckAt, systemHint);
+            return callHaiku(prompt);
         } catch (Exception e) {
-            return "AI service error: " + e.getMessage();
+            return "Our AI is taking a break — the free API quota has been used up. Please try again in a few hours. You can also email clearpathwesley@gmail.com to speed things up.";
         }
     }
 
     private String buildServicePrompt(Map<String, String> session, String userMessage, String stuckAt, String systemHint) {
-
         try {
             ObjectMapper mapper = new ObjectMapper();
             String sessionJson = mapper.writeValueAsString(session);
@@ -57,26 +54,25 @@ public class AIService {
                     ? "\nSCOPE RULES:\n" + systemHint
                     : "";
 
+            // Dynamically fetch options for the stuck question only
+            String optionsContext = "";
+            if (stuckAt != null && !stuckAt.isBlank()) {
+                List<DtOption> options = dtOptionRepository.findByQuestionId(stuckAt);
+                if (!options.isEmpty()) {
+                    optionsContext = "\nOptions for " + stuckAt + ":\n" +
+                            options.stream()
+                                    .map(o -> o.getValue() + " (" + o.getLabel() + ")")
+                                    .collect(Collectors.joining(" | "));
+                }
+            }
+
             return """
                 You are ClearPath, Ontario driver's license guide.
-
+                %s
                 Session: %s
                 Context: %s
+                %s
                 User: %s
-
-                Options:
-                P1Q1:age18plus|age16to17|underAge16|notSure
-                P1Q2:international_student|work_permit|visitor|permanent_resident|protected_person_refugee|canadian_citizen
-                P1Q2.1IS:validMoreThan6Months|validLessThan6Months|expired
-                P1Q2.1WP:open_work_permit|employer_specific
-                P1Q2.2WP:validMoreThan6Months|validLessThan6Months|expired
-                P1Q2.1VIS:short_term_tourist|long_stay
-                P1Q2.1PR:pr_card|copr
-                P1Q2.2PRCard:valid|expired
-                P1Q3:Yes|No
-                P1Q3.1:country_code
-                P1Q3.2NotAgreement:Less1Year|1To2|MoreThen2
-                P1Q3.3NotAgreement:Yes|No
 
                 Rules:
                 - Max 3 short sentences per reply.
@@ -89,147 +85,55 @@ public class AIService {
 
                 If out of scope: append [SCOPE_OUT]
                 If still asking: no tag.
-                """.formatted(hintContext, sessionJson, stuckContext, userMessage);
+                """.formatted(hintContext, sessionJson, stuckContext, optionsContext, userMessage);
 
         } catch (Exception e) {
             return userMessage;
         }
     }
 
-    private String buildPlainLanguagePrompt(String serviceResponse) {
-        return """
-                You are formatting guidance for a newcomer navigating a government process.
+    private String callHaiku(String prompt) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
 
-                Original:
-                %s
-
-                Rules:
-                - If the original is asking clarifying questions, output those questions as-is. Do NOT reformat into steps.
-                - If the original contains steps/documents/fees, restructure into this format:
-
-                **Your Steps:**
-                1. [Step title in 5 words or less]
-                   - [One sentence: what to do]
-                2. [Next step]
-                   - [One sentence]
-
-                **Document Checklist:**
-                | Document | Requirement |
-                | [document name] | [requirement] |
-
-                **Cost:**
-                - Total: $[amount] (before tax)
-                - Includes: [brief breakdown]
-
-                **Tips:**
-                - [specific warning for this user's situation]
-                - [common mistake for similar situations]
-                - [easy to forget item]
-
-                Use only standard ASCII characters. No emojis, no arrows, no special symbols.
-                No greetings, no encouragement, no filler.
-                """.formatted(serviceResponse);
-    }
-
-    public CheatsheetResponse generateCheatsheet(String prompt) {
-        String requestBody = buildGeminiRequest(prompt);
-
-        try {
-            String responseBody = callGemini(requestBody);
-            String content = extractText(responseBody);
-
-            ObjectMapper mapper = new ObjectMapper();
-            return mapper.readValue(content, CheatsheetResponse.class);
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    // ── Shared helpers ──
-
-    private String buildGeminiRequest(String prompt, boolean withSearch) {
-        if (withSearch) {
-            return """
-                    {
-                        "contents": [
-                            {"parts": [{"text": "%s"}]}
-                        ],
-                        "tools": [{"google_search": {}}]
-                    }
-                    """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
-        } else {
-            return """
-                    {
-                        "contents": [
-                            {"parts": [{"text": "%s"}]}
-                        ]
-                    }
-                    """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
-        }
-    }
-
-    private String buildGeminiRequest(String prompt) {
-        return """
-                {
-                    "contents": [
-                        {
-                            "parts": [
-                                {"text": "%s"}
-                            ]
-                        }
-                    ]
+        String requestBody = mapper.writeValueAsString(Map.of(
+                "model", "claude-haiku-4-5",
+                "max_tokens", 1024,
+                "messages", new Object[]{
+                        Map.of("role", "user", "content", prompt)
                 }
-                """.formatted(prompt.replace("\"", "\\\"").replace("\n", "\\n"));
-    }
+        ));
 
-    private String callGemini(String requestBody) throws Exception {
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(GEMINI_URL + apiKey))
+                .uri(URI.create(ANTHROPIC_URL))
                 .header("Content-Type", "application/json")
+                .header("x-api-key", apiKey)
+                .header("anthropic-version", "2023-06-01")
                 .POST(HttpRequest.BodyPublishers.ofString(requestBody))
                 .build();
 
         HttpResponse<String> response = client.send(request,
                 HttpResponse.BodyHandlers.ofString());
 
-        return response.body();
+        return extractHaikuText(response.body());
     }
 
-    private String extractText(String responseBody) throws Exception {
-        System.out.println("Gemini raw: " + responseBody.substring(0, Math.min(300, responseBody.length())));
+    private String extractHaikuText(String responseBody) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(responseBody);
-        String text = root.path("candidates")
-                .path(0)
-                .path("content")
-                .path("parts")
+        return root.path("content")
                 .path(0)
                 .path("text")
                 .asText("No response from AI.");
-        return text.replaceAll("[^\\x00-\\x7F]", "");
     }
 
-    private String buildPrompt(Map<String, String> session, String userMessage) {
+    public CheatsheetResponse generateCheatsheet(String prompt) {
         try {
+            String response = callHaiku(prompt);
             ObjectMapper mapper = new ObjectMapper();
-            String sessionJson = mapper.writeValueAsString(session);
-
-            return """
-                    You are ClearPath, an AI assistant helping people navigate
-                    Canadian government processes.
-
-                    User's background from decision tree:
-                    %s
-
-                    User's message:
-                    %s
-
-                    Please provide clear, specific guidance for their situation.
-                    """.formatted(sessionJson, userMessage);
-
+            return mapper.readValue(response, CheatsheetResponse.class);
         } catch (Exception e) {
-            return userMessage;
+            return null;
         }
     }
 }
