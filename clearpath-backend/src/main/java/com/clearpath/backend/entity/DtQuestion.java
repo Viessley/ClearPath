@@ -23,6 +23,12 @@ public class DtQuestion {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "scope_out_key")
+    private String scopeOutKey;
+
+    public String getScopeOutKey() { return scopeOutKey; }
+    public void setScopeOutKey(String scopeOutKey) { this.scopeOutKey = scopeOutKey; }
+
     public String getId() {
         return id;
     }

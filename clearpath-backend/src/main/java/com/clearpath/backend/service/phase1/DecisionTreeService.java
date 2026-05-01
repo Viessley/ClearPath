@@ -103,17 +103,26 @@ public class DecisionTreeService {
         }
 
         Map<String, Object> response = new HashMap<>();
-        response.put("type", transition.getResponseType());
+        String responseType = transition.getResponseType();
+        response.put("type", responseType);
         response.put("feedback", transition.getFeedback());
-        response.put("nextQuestionId",transition.getNextQuestionId());
-        response.put("done","ANSWER".equals(transition.getResponseType()));
+        response.put("nextQuestionId", transition.getNextQuestionId());
+        response.put("done", "ANSWER".equals(responseType) || "SCOPE_OUT".equals(responseType));
 
         String nextId = transition.getNextQuestionId();
         if (nextId != null) {
-            Map<String, Object> nextQ = getQuestion(nextId);
-            response.put("question", nextQ.get("question"));
-            response.put("questionId", nextId);
-            response.put("options", nextQ.get("options"));
+            // Check if next question is a SCOPE_OUT terminal node
+            DtQuestion nextQuestion = questionRepository.findById(nextId).orElse(null);
+            if (nextQuestion != null && nextQuestion.getScopeOutKey() != null) {
+                response.put("type", "SCOPE_OUT");
+                response.put("scopeOutKey", nextQuestion.getScopeOutKey());
+                response.put("done", true);
+            } else {
+                Map<String, Object> nextQ = getQuestion(nextId);
+                response.put("question", nextQ.get("question"));
+                response.put("questionId", nextId);
+                response.put("options", nextQ.get("options"));
+            }
         }
         return response;
     }
