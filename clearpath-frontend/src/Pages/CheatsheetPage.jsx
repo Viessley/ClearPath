@@ -150,13 +150,15 @@ function LoadingStages() {
 export default function CheatsheetPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const session = location.state?.session || {};
+  const session     = location.state?.session     || {};
+  const scopeOutKey = location.state?.scopeOutKey || null;
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
-  const [showSaveModal, setShowSaveModal] = useState(false);
-  const [saveLoading, setSaveLoading] = useState(false);
+  const [loading,        setLoading]        = useState(true);
+  const [error,          setError]          = useState(null);
+  const [data,           setData]           = useState(null);
+  const [scopeOutReport, setScopeOutReport] = useState(null);
+  const [showSaveModal,  setShowSaveModal]  = useState(false);
+  const [saveLoading,    setSaveLoading]    = useState(false);
 
   const situationLines = buildSituationLines(session);
 
@@ -166,7 +168,9 @@ export default function CheatsheetPage() {
       setLoading(false);
       return;
     }
-    fetchCheatsheet();
+    const tasks = [fetchCheatsheet()];
+    if (scopeOutKey) tasks.push(fetchScopeOutReport(scopeOutKey));
+    Promise.all(tasks);
   }, []);
 
   async function fetchCheatsheet() {
@@ -191,6 +195,16 @@ export default function CheatsheetPage() {
       setError("Our server decided to take an unauthorized vacation. The developer has been notified and is not having a good time right now. Check back in a few minutes, or email clearpathwesley@gmail.com to make his day worse.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function fetchScopeOutReport(key) {
+    try {
+      const res = await fetch(`${API_BASE}/scope-out/report?key=${encodeURIComponent(key)}`);
+      const json = await res.json();
+      setScopeOutReport(json);
+    } catch {
+      // Silent fail — cheatsheet still renders without scope-out block
     }
   }
 
@@ -471,6 +485,74 @@ export default function CheatsheetPage() {
               style={{ fontSize: "13px", color: "#dc2626", fontWeight: "600", textDecoration: "underline", background: "none", border: "none", cursor: "pointer", padding: 0 }}>
               ← Back to questions
             </button>
+          </div>
+        )}
+
+        {/* SCOPE OUT BLOCKER — shown when user hits an eligibility wall */}
+        {scopeOutReport && (
+          <div style={{
+            backgroundColor: "#fef2f2",
+            border: "2px solid #fca5a5",
+            borderRadius: "16px",
+            padding: "20px",
+            marginBottom: "12px",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "14px" }}>
+              <span style={{ fontSize: "16px" }}>⚠️</span>
+              <h3 style={{ fontSize: "13px", fontWeight: "700", color: "#dc2626", letterSpacing: "0.06em", textTransform: "uppercase", margin: 0 }}>
+                One thing to sort out first
+              </h3>
+            </div>
+
+            <p style={{ fontSize: "14px", fontWeight: "600", color: "#111827", margin: "0 0 10px 0" }}>
+              {scopeOutReport.situation}
+            </p>
+
+            {scopeOutReport.whyBlocked && (
+              <div style={{ marginBottom: "10px" }}>
+                <p style={{ fontSize: "12px", fontWeight: "700", color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 4px 0" }}>Why you can't apply right now</p>
+                <p style={{ fontSize: "13px", color: "#374151", lineHeight: 1.6, margin: 0 }}>{scopeOutReport.whyBlocked}</p>
+              </div>
+            )}
+
+            {scopeOutReport.consequences && (
+              <div style={{ marginBottom: "10px" }}>
+                <p style={{ fontSize: "12px", fontWeight: "700", color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 4px 0" }}>What this affects</p>
+                <p style={{ fontSize: "13px", color: "#374151", lineHeight: 1.6, margin: 0 }}>{scopeOutReport.consequences}</p>
+              </div>
+            )}
+
+            {scopeOutReport.nextStep && (
+              <div style={{ marginBottom: "10px" }}>
+                <p style={{ fontSize: "12px", fontWeight: "700", color: "#dc2626", textTransform: "uppercase", letterSpacing: "0.05em", margin: "0 0 4px 0" }}>Your most important next step</p>
+                <p style={{ fontSize: "13px", color: "#374151", lineHeight: 1.6, margin: 0 }}>{scopeOutReport.nextStep}</p>
+              </div>
+            )}
+
+            {scopeOutReport.resourceLinks && (() => {
+              try {
+                const links = typeof scopeOutReport.resourceLinks === "string"
+                  ? JSON.parse(scopeOutReport.resourceLinks)
+                  : scopeOutReport.resourceLinks;
+                return links?.length > 0 ? (
+                  <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                    {links.map((link, i) => (
+                      <a key={i} href={link.url} target="_blank" rel="noopener noreferrer"
+                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 14px", backgroundColor: "#fff", border: "1px solid #fca5a5", borderRadius: "10px", textDecoration: "none", gap: "8px" }}>
+                        <span style={{ fontSize: "13px", color: "#dc2626", fontWeight: "600" }}>{link.label}</span>
+                        <span style={{ fontSize: "14px" }}>→</span>
+                      </a>
+                    ))}
+                  </div>
+                ) : null;
+              } catch { return null; }
+            })()}
+
+            {scopeOutReport.afterResolved && (
+              <p style={{ fontSize: "12px", color: "#6b7280", margin: "14px 0 0 0", fontStyle: "italic", lineHeight: 1.5 }}>
+                {scopeOutReport.afterResolved}
+              </p>
+            )}
           </div>
         )}
 
