@@ -101,9 +101,6 @@ public class KnowledgeService {
     }
 
     private String mapTopic(Map<String, String> session) {
-        // Check age edge cases first
-        if ("under16".equals(session.get("P1Q1"))) return "age";
-
         String status = session.get("P1Q2");
         if (status == null) return null;
         return switch (status) {
@@ -127,14 +124,6 @@ public class KnowledgeService {
     }
 
     private String mapSubtopic(Map<String, String> session) {
-        // Check age edge cases first
-        if ("under16".equals(session.get("P1Q1"))) {
-            String sub = session.get("P1Q1.1Under16");
-            if ("soon".equals(sub))   return "under16_soon";
-            if ("medium".equals(sub)) return "under16_medium";
-            if ("far".equals(sub))    return "under16_far";
-        }
-
         String hasLicence = session.get("P1Q3");
         if ("No".equals(hasLicence)) return "no_foreign_licence";
         if ("Yes".equals(hasLicence)) {
@@ -157,7 +146,7 @@ public class KnowledgeService {
     }
 
     public Integer resolveKbId(Map<String, String> session) {
-        // Check age edge cases first
+        // Age edge cases first
         if ("under16".equals(session.get("P1Q1"))) {
             String sub = session.get("P1Q1.1Under16");
             if ("soon".equals(sub))   return 46;
@@ -165,17 +154,32 @@ public class KnowledgeService {
             if ("far".equals(sub))    return 48;
         }
 
+        String topic    = mapTopic(session);
         String subtopic = mapSubtopic(session);
-        if (subtopic == null) return null;
-        return switch (subtopic) {
-            case "no_foreign_licence"                -> 1;
-            case "exchange_agreement_licence"        -> 2;
-            case "non_agreement_record_under_1_year" -> 3;
-            case "non_agreement_record_1_to_2_years" -> 4;
-            case "non_agreement_record_over_2_years" -> 5;
-            case "non_agreement_no_record"           -> 6;
-            default -> null;
+        if (topic == null || subtopic == null) return null;
+
+        int base = switch (topic) {
+            case "international_student"   ->  1;
+            case "canadian_citizen"        ->  7;
+            case "permanent_resident_copr" -> 19;
+            case "work_permit"             -> 25;
+            case "refugee_claimant"        -> 31;
+            default -> -1;
         };
+        if (base == -1) return null;
+
+        int offset = switch (subtopic) {
+            case "no_foreign_licence"                -> 0;
+            case "exchange_agreement_licence"        -> 1;
+            case "non_agreement_record_under_1_year" -> 2;
+            case "non_agreement_record_1_to_2_years" -> 3;
+            case "non_agreement_record_over_2_years" -> 4;
+            case "non_agreement_no_record"           -> 5;
+            default -> -1;
+        };
+        if (offset == -1) return null;
+
+        return base + offset;
     }
 
     private String formatSteps(String stepsJson) {
