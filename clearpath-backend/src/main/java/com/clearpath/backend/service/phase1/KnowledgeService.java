@@ -157,15 +157,23 @@ public class KnowledgeService {
     }
 
     public Integer resolveKbId(Map<String, String> session) {
+        // Check age edge cases first
+        if ("under16".equals(session.get("P1Q1"))) {
+            String sub = session.get("P1Q1.1Under16");
+            if ("soon".equals(sub))   return 46;
+            if ("medium".equals(sub)) return 47;
+            if ("far".equals(sub))    return 48;
+        }
+
         String subtopic = mapSubtopic(session);
         if (subtopic == null) return null;
         return switch (subtopic) {
-            case "no_foreign_licence"              -> 1;
-            case "exchange_agreement_licence"      -> 2;
+            case "no_foreign_licence"                -> 1;
+            case "exchange_agreement_licence"        -> 2;
             case "non_agreement_record_under_1_year" -> 3;
             case "non_agreement_record_1_to_2_years" -> 4;
             case "non_agreement_record_over_2_years" -> 5;
-            case "non_agreement_no_record"         -> 6;
+            case "non_agreement_no_record"           -> 6;
             default -> null;
         };
     }
