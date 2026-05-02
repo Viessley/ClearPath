@@ -96,12 +96,12 @@ export default function DecisionTreePage() {
   const [feedback,      setFeedback]      = useState(null);
 
   // Flow state
-  const [session,    setSession]    = useState({});
-  const [history,    setHistory]    = useState([]);
-  const [done,       setDone]       = useState(false);
-  const [aiSupport,  setAiSupport]  = useState(false);
-  const [loading,    setLoading]    = useState(false);
-  const [error,      setError]      = useState(null);
+  const [session,   setSession]   = useState({});
+  const [history,   setHistory]   = useState([]);
+  const [done,      setDone]      = useState(false);
+  const [aiSupport, setAiSupport] = useState(false);
+  const [loading,   setLoading]   = useState(false);
+  const [error,     setError]     = useState(null);
 
   // Animation
   const [isVisible, setIsVisible] = useState(false);
@@ -196,21 +196,12 @@ export default function DecisionTreePage() {
         break;
 
       case "ANSWER":
-        setQuestion(null);
-        setOptions([]);
-        setSelectedValue(null);
-        setDone(true);
-        setAiSupport(false);
-        break;
-
-      case "SCOPE_OUT":
         navigate("/cheatsheet", {
-          state: { session: updatedSession, scopeOutKey: data.scopeOutKey }
+          state: { session: updatedSession }
         });
         break;
 
       case "NEXT_SECTION":
-        // Placeholder — section routing not yet implemented
         setQuestion(null);
         setOptions([]);
         setSelectedValue(null);

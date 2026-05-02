@@ -47,6 +47,17 @@ function buildSituationLines(session) {
     if (label) lines.push(label);
   }
 
+  // Under 16 — when do you turn 16
+  if (session["P1Q1.1Under16"]) {
+    const ageMap = {
+      "soon": "Turning 16: Within 6 months",
+      "medium": "Turning 16: In 6 months to 1 year",
+      "far": "Turning 16: More than 1 year away",
+    };
+    const label = ageMap[session["P1Q1.1Under16"]];
+    if (label) lines.push(label);
+  }
+
   // Study permit validity
   if (session["P1Q2.1IS"]) {
     const label = SESSION_LABELS.P1Q2_1IS[session["P1Q2.1IS"]];
@@ -150,15 +161,15 @@ function LoadingStages() {
 export default function CheatsheetPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const session     = location.state?.session     || {};
+  const session = location.state?.session || {};
   const scopeOutKey = location.state?.scopeOutKey || null;
 
-  const [loading,        setLoading]        = useState(true);
-  const [error,          setError]          = useState(null);
-  const [data,           setData]           = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
   const [scopeOutReport, setScopeOutReport] = useState(null);
-  const [showSaveModal,  setShowSaveModal]  = useState(false);
-  const [saveLoading,    setSaveLoading]    = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [saveLoading, setSaveLoading] = useState(false);
 
   const situationLines = buildSituationLines(session);
 
