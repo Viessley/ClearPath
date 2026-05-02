@@ -101,6 +101,9 @@ public class KnowledgeService {
     }
 
     private String mapTopic(Map<String, String> session) {
+        // Check age edge cases first
+        if ("under16".equals(session.get("P1Q1"))) return "age";
+
         String status = session.get("P1Q2");
         if (status == null) return null;
         return switch (status) {
@@ -124,6 +127,14 @@ public class KnowledgeService {
     }
 
     private String mapSubtopic(Map<String, String> session) {
+        // Check age edge cases first
+        if ("under16".equals(session.get("P1Q1"))) {
+            String sub = session.get("P1Q1.1Under16");
+            if ("soon".equals(sub))   return "under16_soon";
+            if ("medium".equals(sub)) return "under16_medium";
+            if ("far".equals(sub))    return "under16_far";
+        }
+
         String hasLicence = session.get("P1Q3");
         if ("No".equals(hasLicence)) return "no_foreign_licence";
         if ("Yes".equals(hasLicence)) {
