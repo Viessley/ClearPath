@@ -159,11 +159,13 @@ public class KnowledgeService {
         if (topic == null || subtopic == null) return null;
 
         int base = switch (topic) {
-            case "international_student"   ->  1;
-            case "canadian_citizen"        ->  7;
-            case "permanent_resident_copr" -> 19;
-            case "work_permit"             -> 25;
-            case "refugee_claimant"        -> 31;
+            case "international_student"      ->  1;
+            case "canadian_citizen"           ->  7;
+            case "permanent_resident_copr"    -> 19;
+            case "work_permit"                -> 25;
+            case "refugee_claimant"           -> 31;
+            case "permanent_resident_pr_card" -> 50;
+            case "protected_person"           -> 56;
             default -> -1;
         };
         if (base == -1) return null;
